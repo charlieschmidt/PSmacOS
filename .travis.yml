@@ -8,11 +8,8 @@ addons:
     casks:
     - powershell
 
-before_script:
+script:
   - pwsh -f "./build.ps1"
-
-#script:
-#  - pwsh -f "${env:TRAVIS_BUILD_DIR}/test.ps1"
 
 #after_success:
 #  - pwsh -f "${env:TRAVIS_BUILD_DIR}/deploy.ps1"
