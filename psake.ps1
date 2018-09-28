@@ -108,10 +108,10 @@ Task Deploy -Depends Test {
     $lines
 
     $Params = @{
-        Path = $ProjectRoot/Output
-        #Force = $true
+        Path = $ProjectRoot
+        Force = $true
         Recurse = $false # We keep psdeploy artifacts, avoid deploying those : )
     }
-    Invoke-PSDeploy @Verbose @Params
 
+    Invoke-PSDeploy @Verbose @Params
 }

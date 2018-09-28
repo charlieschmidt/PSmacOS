@@ -7,6 +7,7 @@ if(
     $true -eq $true
 )
 {
+    push-location Output
     Deploy Module {
         By PSGalleryModule {
             FromSource $ENV:BHProjectName
@@ -16,6 +17,7 @@ if(
             }
         }
     }
+    pop-location
 }
 else
 {
