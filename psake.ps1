@@ -98,43 +98,20 @@ Task Test -Depends Build {
     "`n"
 }
 
-Task Release -Depends Test {
-    $lines
-<#
+Task BumpVersion -Depends {
     $lines
     
-    # Load the module, read the exported functions, update the psd1 FunctionsToExport
-    Set-ModuleFunctions
-
-    # Bump the module version
-    Update-Metadata -Path $env:BHPSModuleManifest
-    #>
+    Update-Metadata -Path $env:BHPSModuleManifest    
 }
 
-Task Deploy -Depends Release {
+Task Deploy -Depends Test {
     $lines
-<#
-  # Gate deployment
-    if (
-        $ENV:BHBuildSystem -ne 'Unknown' -and
-        $ENV:BHBranchName -eq "master" -and
-        $ENV:BHCommitMessage -match '!deploy'
-    )
-    {
-        $Params = @{
-            Path  = $ProjectRoot
-            Force = $true
-        }
 
-        Invoke-PSDeploy @Verbose @Params
+    $Params = @{
+        Path = $ProjectRoot/Output
+        #Force = $true
+        Recurse = $false # We keep psdeploy artifacts, avoid deploying those : )
     }
-    else
-    {
-        "Skipping deployment: To deploy, ensure that...`n" +
-        "`t* You are in a known build system (Current: $ENV:BHBuildSystem)`n" +
-        "`t* You are committing to the master branch (Current: $ENV:BHBranchName) `n" +
-        "`t* Your commit message includes !deploy (Current: $ENV:BHCommitMessage)"
-    }
-    #>
-  
+    Invoke-PSDeploy @Verbose @Params
+
 }
