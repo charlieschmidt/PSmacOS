@@ -1,0 +1,15 @@
+os: osx
+osx_image: xcode10
+addons:
+  homebrew:
+    casks:
+    - powershell
+
+before_script:
+  - pwsh -f "${env:TRAVIS_BUILD_DIR}/build.ps1"
+
+#script:
+#  - pwsh -f "${env:TRAVIS_BUILD_DIR}/test.ps1"
+
+#after_success:
+#  - pwsh -f "${env:TRAVIS_BUILD_DIR}/deploy.ps1"
