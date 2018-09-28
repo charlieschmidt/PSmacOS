@@ -1,3 +1,5 @@
+language: generic
+
 os: osx
 osx_image: xcode10
 addons:
@@ -6,7 +8,7 @@ addons:
     - powershell
 
 before_script:
-  - pwsh -f "${env:TRAVIS_BUILD_DIR}/build.ps1"
+  - pwsh -f "./build.ps1"
 
 #script:
 #  - pwsh -f "${env:TRAVIS_BUILD_DIR}/test.ps1"
