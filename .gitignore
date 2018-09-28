@@ -1,0 +1,5 @@
+Output
+**/bin
+**/obj
+**/CMakeFiles
+src/Native/build
