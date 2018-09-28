@@ -12,10 +12,10 @@
 RootModule = 'PSmacOS.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.0.1'
+ModuleVersion = '0.0.2'
 
 # Supported PSEditions
-# CompatiblePSEditions = @()
+CompatiblePSEditions = @('Core')
 
 # ID used to uniquely identify this module
 GUID = '71e27bd1-3801-4bfe-b710-93d96365db31'
@@ -30,10 +30,10 @@ CompanyName = 'Unknown'
 Copyright = '(c) Charlie Schmidt. All rights reserved.'
 
 # Description of the functionality provided by this module
-# Description = ''
+Description = 'Cmdlets for macOS'
 
 # Minimum version of the PowerShell engine required by this module
-# PowerShellVersion = ''
+PowerShellVersion = '6.0'
 
 # Name of the PowerShell host required by this module
 # PowerShellHostName = ''
@@ -95,13 +95,13 @@ PrivateData = @{
     PSData = @{
 
         # Tags applied to this module. These help with module discovery in online galleries.
-        # Tags = @()
+        Tags = @('macOS')
 
         # A URL to the license for this module.
-        # LicenseUri = ''
+        LicenseUri = 'https://github.com/charlieschmidt/PSmacOS/blob/master/LICENSE'
 
         # A URL to the main website for this project.
-        # ProjectUri = ''
+        ProjectUri = 'https://github.com/charlieschmidt/PSmacOS'
 
         # A URL to an icon representing this module.
         # IconUri = ''
@@ -120,4 +120,5 @@ PrivateData = @{
 # DefaultCommandPrefix = ''
 
 }
+
 
