@@ -15,9 +15,13 @@ PowerShell module containing convience or platform-specific cmdlets for macOS.
 
 `Set-Clipboard` - set clipboard content
 
-## Planned/Future
+`Show-MessageBox` - show alerts/message boxes with buttons
+
+## In Progress
 
 `Out-GridView`
+
+## Planned/Future
 
 `Start-Process` or equivalent that knows about macOS app bundles [like the `open` command but powershelly]
 
