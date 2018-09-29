@@ -7,7 +7,7 @@ using System.Collections;
 
 namespace PSmacOS
 {
-    [Cmdlet(VerbsCommon.Out, "GridView")]
+    [Cmdlet(VerbsData.Out, "GridView")]
     [Alias("ogv")]
     public class OutGridView : Cmdlet
     {
