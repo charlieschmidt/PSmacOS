@@ -2,6 +2,9 @@ using System;
 using System.Management.Automation;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
+using System.Reflection;
+using System.Diagnostics;
 
 namespace PSmacOS
 {
@@ -31,6 +34,18 @@ namespace PSmacOS
                 var clipboardManagedString = MarshalExtensions.NativeUtf8FromString(value);
                 var ret = setClipboard(clipboardManagedString);
                 return ret;
+            }
+        }
+
+        public class GridView
+        {
+            [DllImport("./Native/build/lib/libpsmacosbridging")]
+            internal extern static int showGridView();
+
+            public static void Show()
+            {
+                showGridView();
+
             }
         }
 

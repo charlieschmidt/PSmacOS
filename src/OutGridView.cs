@@ -13,6 +13,13 @@ namespace PSmacOS
     {
         protected override void BeginProcessing()
         {
+            NativeBridge.GridView.Show();
+        }
+
+        protected override void ProcessRecord() {
+            while (true) {
+
+            }
         }
     }
 }

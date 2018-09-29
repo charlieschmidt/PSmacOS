@@ -6,9 +6,11 @@
 extern "C" {
 #endif
 
+// bridge_gridview.m
+int showGridView();
 
 // bridge_pasteboard.m
-char *getClipboard();
+char * getClipboard();
 bool setClipboard(const char *valueString);
 
 // bridge_messagebox.m
