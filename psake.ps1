@@ -21,7 +21,7 @@ Properties {
 }
 
 
-Task Default -Depends Init,Build,Test,Deploy
+Task Default -Depends Init,Build
 
 
 Task Init {
@@ -33,30 +33,38 @@ Task Init {
 }
 
 Task Clean {
-    push-location ./Output
-    remove-item * -recurse -force
+    push-location $ENV:BHBuildOutput
+        remove-item * -recurse -force
     Pop-Location
 
     push-location -Path $ProjectRoot/src/Native
-    remove-item build -recurse -force -ErrorAction SilentlyContinue
+        remove-item build -recurse -force -ErrorAction SilentlyContinue
     pop-location
 
 
     push-location -Path $ProjectRoot/src
-    dotnet clean
+        dotnet clean
+        if ($lastexitcode -ne 0)
+        {
+            throw "dotnet clean failed"
+        }
     pop-location
 }
 
 
 Task Build -Depends CompileCSharp {
-    Copy-Item "$PSScriptRoot\PSmacOS\*" "$PSScriptRoot\output\PSmacOS" -Recurse -Force
+    Copy-Item "$PSScriptRoot\PSmacOS\*" "$($ENV:BHBuildOutput)\PSmacOS" -Recurse -Force
 }
 
 Task CompileCSharp -Depends CompileObjC {
     $lines
     'Compiling C#'
     push-location -Path "$ProjectRoot/src"
-        dotnet build -o $ProjectRoot\output\PSmacOS\bin
+        dotnet build -o $ENV:BHBuildOutput\PSmacOS\bin
+        if ($lastexitcode -ne 0)
+        {
+            throw "dotnet build failed"
+        }
     pop-location
 }
 
@@ -67,7 +75,16 @@ Task CompileObjC {
         new-item -name "build" -ItemType "Directory" -Force -ErrorAction SilentlyContinue | Out-Null
         push-location build
             cmake ..
+            if ($lastexitcode -ne 0)
+            {
+                throw "cmake failed"
+            }
+
             make
+            if ($lastexitcode -ne 0)
+            {
+                throw "make failed"
+            }
         pop-location
     pop-location
 }
