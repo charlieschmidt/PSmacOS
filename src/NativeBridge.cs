@@ -9,18 +9,18 @@ namespace PSmacOS
     {
 
         [DllImport("./Native/build/lib/libpsmacosbridging")]
-        internal extern static IntPtr get_macos_clipboard();
+        internal extern static IntPtr get_clipboard();
 
 
         [DllImport("./Native/build/lib/libpsmacosbridging")]
-        internal extern static bool set_macos_clipboard(IntPtr clipboardManagedString, int length);
+        internal extern static bool set_clipboard(IntPtr clipboardManagedString, int length);
 
         [DllImport("./Native/build/lib/libpsmacosbridging")]
         internal extern static void free_clipboard(IntPtr clipboardManagedString);
 
         public static string GetClipboard()
         {
-            IntPtr clipboardManagedString = get_macos_clipboard();
+            IntPtr clipboardManagedString = get_clipboard();
 
             var clipboardString = MarshalExtensions.StringFromNativeUtf8(clipboardManagedString);
 
@@ -34,7 +34,7 @@ namespace PSmacOS
             var clipboardManagedString = MarshalExtensions.NativeUtf8FromString(value);
             int length = Encoding.UTF8.GetByteCount(value);
 
-            var ret = set_macos_clipboard(clipboardManagedString, length);
+            var ret = set_clipboard(clipboardManagedString, length);
 
             return ret;
         }

@@ -14,16 +14,19 @@
 #include <stdlib.h>
 #include <string.h>
 
-char* get_macos_clipboard() {
-    NSString *clipboardNSString;
+char* get_clipboard() {
+    // get reference to clipboard
+    NSPasteboard *pb = [NSPasteboard generalPasteboard];
+
+    NSString *clipboardNSString = [pb stringForType:NSPasteboardTypeString];
+    if (clipboardNSString == nil) {
+        return NULL;
+    }
+
     const char *clipboardString;
     char *ret;
     size_t len;
 
-    clipboardNSString = [[NSPasteboard generalPasteboard] stringForType:NSPasteboardTypeString];
-    if (clipboardNSString == nil) {
-        return NULL;
-    }
 
     clipboardString = [clipboardNSString UTF8String];
     len = strlen(clipboardString);

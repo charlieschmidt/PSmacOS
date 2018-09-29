@@ -6,9 +6,11 @@
 extern "C" {
 #endif
 
-char *get_macos_clipboard();
+char *get_clipboard();
 
 void free_clipboard(char *clipboard);
+
+bool set_clipboard(const char *valueString, uint length);
 
 #ifdef __cplusplus
 }
