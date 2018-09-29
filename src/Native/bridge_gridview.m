@@ -49,6 +49,12 @@ NSLog(@"going async");
         dispatch_semaphore_signal(sema);
     }];
 
+    
+    while (dispatch_semaphore_wait(sema, DISPATCH_TIME_NOW)) { 
+        [[NSRunLoop mainRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:10]];
+        [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:10]]; 
+    }
+
     //dispatch_semaphore_wait(sema, DISPATCH_TIME_FOREVER);
   //  dispatch_release(sema);
     
