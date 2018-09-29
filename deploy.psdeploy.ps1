@@ -10,7 +10,7 @@ if(
     push-location Output
     Deploy Module {
         By PSGalleryModule {
-            FromSource $ENV:BHProjectName
+            FromSource "Output/$($ENV:BHProjectName)"
             To PSGallery
             WithOptions @{
                 ApiKey = $ENV:NugetApiKey
