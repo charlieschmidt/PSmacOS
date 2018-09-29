@@ -14,7 +14,7 @@ namespace PSmacOS
     {
         protected override void BeginProcessing()
         {
-            var clipboard = NativeBridge.GetClipboard();
+            var clipboard = NativeBridge.Clipboard.Get();
             WriteObject($"{clipboard}");
         }
     }
@@ -51,7 +51,7 @@ namespace PSmacOS
             {
                 var value = string.Join(Environment.NewLine, _contentList.ToArray(), 0, _contentList.Count);
 
-                var ret = NativeBridge.SetClipboard(value);
+                var ret = NativeBridge.Clipboard.Set(value);
             }
         }
     }

@@ -1,7 +1,3 @@
-
-#include <stdlib.h>
-
-
 #include <libkern/OSAtomic.h>
 #include <Cocoa/Cocoa.h>
 
@@ -14,7 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-char* get_clipboard() {
+char* getClipboard() {
     // get reference to clipboard
     NSPasteboard *pb = [NSPasteboard generalPasteboard];
 
@@ -39,20 +35,15 @@ char* get_clipboard() {
     return ret;
 }
 
-void free_clipboard(char *clipboard) {
-    if (clipboard != NULL) {
-        free(clipboard);
-    }
-}
 
-bool set_clipboard(const char *valueString, uint length)
+bool setClipboard(const char *valueString)
 {
     // get reference to clipboard
     NSPasteboard *pb = [NSPasteboard generalPasteboard];
 
     // convert char* to utf'd nsstring
     NSString *valueNSString;
-    valueNSString = [[NSString alloc] initWithBytes:valueString length:length encoding:NSUTF8StringEncoding];
+    valueNSString = [[NSString alloc] initWithBytes:valueString length:strlen(valueString) encoding:NSUTF8StringEncoding];
 
     // prepare clipboard for change
     [pb declareTypes:[NSArray arrayWithObjects:NSPasteboardTypeString,nil] owner:nil];

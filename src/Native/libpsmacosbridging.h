@@ -1,16 +1,21 @@
 
-#ifndef _LIBCLIPBOARD_H_
-#define _LIBCLIPBOARD_H_
+#ifndef _LIBPSMACOSBRIDGING_H_
+#define _LIBPSMACOSBRIDGING_H_
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-char *get_clipboard();
 
-void free_clipboard(char *clipboard);
+// bridge_pasteboard.m
+char *getClipboard();
+bool setClipboard(const char *valueString);
 
-bool set_clipboard(const char *valueString, uint length);
+// bridge_messagebox.m
+unsigned long showMessageBox(double timeoutSeconds, unsigned long type, const char *title, const char *message, const char *buttonOneLabel, const char *buttonTwoLabel, const char *buttonThreeLabel);
+
+// bridge_memory.m
+void freeString(char *string);
 
 #ifdef __cplusplus
 }

@@ -28,6 +28,8 @@ set(OBJC_HEADERS
 )
 
 set(OBJC_SOURCE
+    bridge_memory.m
+    bridge_messagebox.m
     bridge_pasteboard.m
 )
 
