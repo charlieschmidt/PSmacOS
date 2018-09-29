@@ -21,7 +21,7 @@ Properties {
 }
 
 
-Task Default -Depends Init,Build
+Task Default -Depends Init,Build,Test,Deploy
 
 
 Task Init {
