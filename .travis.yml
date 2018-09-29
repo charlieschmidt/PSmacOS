@@ -12,5 +12,5 @@ addons:
 script:
   - pwsh -f "./build.ps1"
 
-#after_success:
-#  - pwsh -f "${env:TRAVIS_BUILD_DIR}/deploy.ps1"
+after_success:
+  - pwsh -f "./deploy.ps1"

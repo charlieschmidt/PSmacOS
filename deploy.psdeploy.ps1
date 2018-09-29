@@ -1,10 +1,17 @@
 
+
+write-host     $env:BHProjectName 
+write-host  $env:BHProjectName
+    write-host  $env:BHBuildSystem 
+    write-host $env:BHBranchName 
+write-host $env:BHCommitMessage
+
 if(
     #$env:BHProjectName -and $env:BHProjectName.Count -eq 1 -and
     #$env:BHBuildSystem -ne 'Unknown' -and
     #$env:BHBranchName -eq "master" -and
     #$env:BHCommitMessage -match '!deploy' -and
-    $true -eq $true
+    $true -eq $false
 )
 {
     push-location Output
