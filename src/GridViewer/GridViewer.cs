@@ -9,7 +9,7 @@ namespace GridViewer
     class Program
     {
         [DllImport("./libpsmacosbridging/build/lib/libpsmacosbridging")]
-        internal extern static IntPtr startGridView();
+        internal extern static void startGridView();
 
         static void Main(string[] args)
         {
