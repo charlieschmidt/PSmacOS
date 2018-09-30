@@ -50,6 +50,7 @@ namespace PSmacOS
 
             public static void AddRecord(PSObject obj)
             {
+                Console.WriteLine("Writing to stdin {0}", obj.ToString());
                 string recordCliXml = PSSerializer.Serialize(obj).Replace("\n", "");
                 _gridViewerProcess.StandardInput.WriteLine(recordCliXml);
             }

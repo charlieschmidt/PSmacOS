@@ -51,23 +51,6 @@ Task Clean {
     pop-location
 }
 
-
-Task Build -Depends CompileCSharp {
-    Copy-Item "$PSScriptRoot\PSmacOS\*" "$($ENV:BHBuildOutput)\PSmacOS" -Recurse -Force
-}
-
-Task CompileCSharp -Depends CompileObjC {
-    $lines
-    'Compiling C#'
-    push-location -Path "$ProjectRoot/src"
-        dotnet build -o $ENV:BHBuildOutput\PSmacOS\bin
-        if ($lastexitcode -ne 0)
-        {
-            throw "dotnet build failed"
-        }
-    pop-location
-}
-
 Task CompileObjC {
     $lines
     'Compiling Objective-C bridging code'
@@ -87,30 +70,55 @@ Task CompileObjC {
             }
         pop-location
     pop-location
+    "`n"
+}
+
+Task CompileCSharp -Depends CompileObjC {
+    $lines
+    'Compiling C#'
+    push-location -Path "$ProjectRoot/src"
+        dotnet build -o $ENV:BHBuildOutput\PSmacOS\bin
+        if ($lastexitcode -ne 0)
+        {
+            throw "dotnet build failed"
+        }
+    pop-location
+    "`n"
+}
+
+Task Build -Depends CompileCSharp {
+    $lines
+    'Assembling Module'
+    Copy-Item "$PSScriptRoot\PSmacOS\*" "$($ENV:BHBuildOutput)\PSmacOS" -Recurse -Force
+    "`n"
 }
 
 Task Test -Depends Build {
     $lines
-    "`n`tSTATUS: Testing with PowerShell $PSVersion"
+    if ($env:BHBuildSystem -eq 'Travis CI' -or $env:BHBranchName -eq "master") {
+        "Testing with PowerShell $PSVersion"
 
-    # Gather test results. Store them in a variable and file
-    $TestResults = Invoke-Pester -Path $ProjectRoot\Tests -PassThru -OutputFormat NUnitXml -OutputFile "$ProjectRoot\$TestFile"
+        # Gather test results. Store them in a variable and file
+        $TestResults = Invoke-Pester -Path $ProjectRoot\Tests -PassThru -OutputFormat NUnitXml -OutputFile "$ProjectRoot\$TestFile"
 
-    # In Appveyor?  Upload our tests! #Abstract this into a function?
-    If($ENV:BHBuildSystem -eq 'AppVeyor')
-    {
-        (New-Object 'System.Net.WebClient').UploadFile(
-            "https://ci.appveyor.com/api/testresults/nunit/$($env:APPVEYOR_JOB_ID)",
-            "$ProjectRoot\$TestFile" )
-    }
+        # In Appveyor?  Upload our tests! #Abstract this into a function?
+        If($ENV:BHBuildSystem -eq 'AppVeyor')
+        {
+            (New-Object 'System.Net.WebClient').UploadFile(
+                "https://ci.appveyor.com/api/testresults/nunit/$($env:APPVEYOR_JOB_ID)",
+                "$ProjectRoot\$TestFile" )
+        }
 
-    Remove-Item "$ProjectRoot\$TestFile" -Force -ErrorAction SilentlyContinue
+        Remove-Item "$ProjectRoot\$TestFile" -Force -ErrorAction SilentlyContinue
 
-    # Failed tests?
-    # Need to tell psake or it will proceed to the deployment. Danger!
-    if($TestResults.FailedCount -gt 0)
-    {
-        Write-Error "Failed '$($TestResults.FailedCount)' tests, build failed"
+        # Failed tests?
+        # Need to tell psake or it will proceed to the deployment. Danger!
+        if($TestResults.FailedCount -gt 0)
+        {
+            Write-Error "Failed '$($TestResults.FailedCount)' tests, build failed"
+        }
+    } else {
+        "Skipping testing"
     }
     "`n"
 }
