@@ -21,7 +21,7 @@ Properties {
 }
 
 
-Task Default -Depends Init,Build
+Task Default -Depends Init,Build,Test,Deploy
 
 
 Task Init {
@@ -71,7 +71,7 @@ Task CompileCSharp -Depends CompileObjC {
 Task CompileObjC {
     $lines
     'Compiling Objective-C bridging code'
-    push-location -Path "$ProjectRoot/src/Native"
+    push-location -Path "$ProjectRoot/src/libpsmacosbridging"
         new-item -name "build" -ItemType "Directory" -Force -ErrorAction SilentlyContinue | Out-Null
         push-location build
             cmake ..

@@ -2,4 +2,4 @@ BuildOutput
 **/bin
 **/obj
 **/CMakeFiles
-src/Native/build
+src/libpsmacosbridging/build

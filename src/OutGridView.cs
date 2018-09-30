@@ -11,15 +11,23 @@ namespace PSmacOS
     [Alias("ogv")]
     public class OutGridView : Cmdlet
     {
+        [Parameter(ValueFromPipeline = true, Mandatory = true)]
+        [AllowNull]
+        public PSObject InputObject { get; set; }
+        
         protected override void BeginProcessing()
         {
-            NativeBridge.GridView.Show();
+            NativeBridge.GridView.Start();
         }
 
-        protected override void ProcessRecord() {
-            while (true) {
+        protected override void ProcessRecord() 
+        {
+            NativeBridge.GridView.AddRecord(InputObject);
+        }
 
-            }
+        protected override void EndProcessing()
+        {
+            NativeBridge.GridView.End();
         }
     }
 }

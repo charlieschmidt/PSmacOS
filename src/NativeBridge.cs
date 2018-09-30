@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Reflection;
 using System.Diagnostics;
+using System.IO;
 
 namespace PSmacOS
 {
@@ -12,13 +13,13 @@ namespace PSmacOS
     {
         public class Clipboard
         {
-            [DllImport("./Native/build/lib/libpsmacosbridging")]
+            [DllImport("./libpsmacosbridging/build/lib/libpsmacosbridging")]
             internal extern static IntPtr getClipboard();
 
-            [DllImport("./Native/build/lib/libpsmacosbridging")]
+            [DllImport("./libpsmacosbridging/build/lib/libpsmacosbridging")]
             internal extern static bool setClipboard(IntPtr clipboardManagedString);
 
-            [DllImport("./Native/build/lib/libpsmacosbridging")]
+            [DllImport("./libpsmacosbridging/build/lib/libpsmacosbridging")]
             internal extern static void freeString(IntPtr managedString);
 
             public static string Get()
@@ -39,12 +40,51 @@ namespace PSmacOS
 
         public class GridView
         {
-            [DllImport("./Native/build/lib/libpsmacosbridging")]
-            internal extern static int showGridView();
+            private static Process _gridViewerProcess = null;
 
-            public static void Show()
+            public static void End()
             {
-                showGridView();
+                Console.WriteLine("Waiting for gv to exit");
+                _gridViewerProcess.WaitForExit();
+            }
+
+            public static void AddRecord(PSObject obj)
+            {
+                string recordCliXml = PSSerializer.Serialize(obj).Replace("\n", "");
+                _gridViewerProcess.StandardInput.WriteLine(recordCliXml);
+            }
+
+            public static void Start()
+            {
+                _gridViewerProcess = new Process();
+
+                _gridViewerProcess.StartInfo.FileName = "dotnet";
+                _gridViewerProcess.StartInfo.Arguments = "GridViewer.dll";
+                _gridViewerProcess.StartInfo.WorkingDirectory = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
+                _gridViewerProcess.StartInfo.CreateNoWindow = true;
+                _gridViewerProcess.StartInfo.UseShellExecute = false;
+
+                _gridViewerProcess.StartInfo.RedirectStandardInput = true;
+                _gridViewerProcess.StartInfo.RedirectStandardOutput = true;
+                _gridViewerProcess.StartInfo.RedirectStandardError = true;
+
+                // Just Console.WriteLine it.
+                _gridViewerProcess.OutputDataReceived += (sender, data) =>
+                {
+                    Console.WriteLine(data.Data);
+                };
+                _gridViewerProcess.ErrorDataReceived += (sender, data) =>
+                {
+                    Console.WriteLine(data.Data);
+                };
+
+
+                Console.WriteLine("Starting GridViewer from nativeBridge");
+                _gridViewerProcess.Start();
+                _gridViewerProcess.BeginOutputReadLine();
+                _gridViewerProcess.BeginErrorReadLine();
+                Console.WriteLine("Started GridViewer from nativeBridge");
 
             }
         }
@@ -57,7 +97,7 @@ namespace PSmacOS
                 Plain = 3
             }
 
-            [DllImport("./Native/build/lib/libpsmacosbridging")]
+            [DllImport("./libpsmacosbridging/build/lib/libpsmacosbridging")]
             internal extern static ulong showMessageBox(double timeoutSeconds, ulong type, IntPtr title, IntPtr message, IntPtr buttonOneLabel, IntPtr buttonTwoLabel, IntPtr buttonThreeLabel);
 
             public static ulong Show(double timeoutSeconds, MessageBox.Type type, string title, string message, string buttonOneLabel, string buttonTwoLabel, string buttonThreeLabel) 

@@ -7,7 +7,7 @@ extern "C" {
 #endif
 
 // bridge_gridview.m
-int showGridView();
+int startGridView();
 
 // bridge_pasteboard.m
 char * getClipboard();

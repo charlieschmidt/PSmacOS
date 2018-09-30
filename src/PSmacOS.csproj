@@ -5,16 +5,18 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.PowerShell.SDK" Version="6.0.0"/>
-
-    <PackageReference Include="System.Management.Automation" Version="6.0.0"/>
-
+    <PackageReference Include="Microsoft.PowerShell.SDK" Version="6.0.0" />
+    <PackageReference Include="System.Management.Automation" Version="6.0.0" />
   </ItemGroup>
 
  <ItemGroup>
-  <Content Include="Native\build\lib\*.*">
+  <Content Include="libpsmacosbridging\build\lib\*.*">
     <CopyToOutputDirectory>Always</CopyToOutputDirectory>
   </Content>
 </ItemGroup>
+
+ <ItemGroup>
+   <ProjectReference Include="GridViewer\GridViewer.csproj" />
+ </ItemGroup>
 
 </Project>
