@@ -52,7 +52,7 @@ bool setClipboard(const char *valueString)
     bool ret = [pb setString:valueNSString forType:NSPasteboardTypeString];
 
     // free resources
-    [valueNSString release];
+   // [valueNSString release];
 
     return ret;
 }

@@ -8,7 +8,7 @@ if ( ${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_BINARY_DIR} )
     message( FATAL_ERROR "In-source builds not allowed. Please make a new directory (called a build directory) and run CMake from there. You may need to remove CMakeCache.txt." )
 endif()
 
-set(GCC_COMPILE_FLAGS "-std=c99 -Wall -pedantic -g")
+set(GCC_COMPILE_FLAGS "-std=c99 -Wall -pedantic -g -fobjc-arc")
 
 execute_process(COMMAND ${CMAKE_C_COMPILER} -dumpversion
                 OUTPUT_VARIABLE GCC_VERSION)
@@ -18,7 +18,7 @@ endif()
 set(CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} ${GCC_COMPILE_FLAGS}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -pedantic -g")
 
-set_source_files_properties(bridge_pasteboard.m PROPERTIES COMPILE_FLAGS "-x objective-c")
+#set_source_files_properties(*.m PROPERTIES COMPILE_FLAGS "-x objective-c")
 
 set(LIBPSMACOSBRIDGING_PRIVATE_LIBS ${LIBPSMACOSBRIDGING_PRIVATE_LIBS} "-framework Cocoa")
 
