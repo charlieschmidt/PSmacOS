@@ -1,4 +1,4 @@
-Import-Module $PSScriptRoot/../Output/PSmacOS/PSmacOS.psd1
+Import-Module $PSScriptRoot/../BuildOutput/PSmacOS/PSmacOS.psd1
 
 InModuleScope 'PSmacOS' {
     Describe "Clipboard Tests" {
