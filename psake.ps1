@@ -37,10 +37,13 @@ Task Clean {
         remove-item * -recurse -force
     Pop-Location
 
-    push-location -Path $ProjectRoot/src/Native
+    push-location -Path $ProjectRoot/src/GridViewer
         remove-item build -recurse -force -ErrorAction SilentlyContinue
     pop-location
 
+    push-location -Path $ProjectRoot/src/libpsmacosbridging
+        remove-item build -recurse -force -ErrorAction SilentlyContinue
+    pop-location
 
     push-location -Path $ProjectRoot/src
         dotnet clean
@@ -54,6 +57,11 @@ Task Clean {
 Task CompileObjC {
     $lines
     'Compiling Objective-C bridging code'
+    push-location -Path "$ProjectRoot/src/GridViewer"
+        xcrun xcodebuild build -configuration Release -project GridViewer.xcodeproj -scheme GridViewer
+        copy-item "./build/Release/GridViewer.app" $ENV:BHBuildOutput\PSmacOS\bin -Recurse -Force
+    pop-location
+
     push-location -Path "$ProjectRoot/src/libpsmacosbridging"
         new-item -name "build" -ItemType "Directory" -Force -ErrorAction SilentlyContinue | Out-Null
         push-location build
@@ -68,8 +76,11 @@ Task CompileObjC {
             {
                 throw "make failed"
             }
+
+            copy-item "./lib/*.dylib" $ENV:BHBuildOutput\PSmacOS\bin -Recurse -Force
         pop-location
     pop-location
+    
     "`n"
 }
 

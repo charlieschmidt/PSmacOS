@@ -13,13 +13,13 @@ namespace PSmacOS
     {
         public class Clipboard
         {
-            [DllImport("./libpsmacosbridging/build/lib/libpsmacosbridging")]
+            [DllImport("./libpsmacosbridging")]
             internal extern static IntPtr getClipboard();
 
-            [DllImport("./libpsmacosbridging/build/lib/libpsmacosbridging")]
+            [DllImport("./libpsmacosbridging")]
             internal extern static bool setClipboard(IntPtr clipboardManagedString);
 
-            [DllImport("./libpsmacosbridging/build/lib/libpsmacosbridging")]
+            [DllImport("./libpsmacosbridging")]
             internal extern static void freeString(IntPtr managedString);
 
             public static string Get()
@@ -50,18 +50,16 @@ namespace PSmacOS
 
             public static void AddRecord(PSObject obj)
             {
-                Console.WriteLine("Writing to stdin {0}", obj.ToString());
-                string recordCliXml = PSSerializer.Serialize(obj).Replace("\n", "");
-                _gridViewerProcess.StandardInput.WriteLine(recordCliXml);
+                var recordJson = PSObjectHelper.ToJson(obj);
+                Console.WriteLine("Writing to stdin {0}", recordJson);
+                _gridViewerProcess.StandardInput.WriteLine(recordJson);
             }
 
             public static void Start()
             {
                 _gridViewerProcess = new Process();
 
-                _gridViewerProcess.StartInfo.FileName = "dotnet";
-                _gridViewerProcess.StartInfo.Arguments = "GridViewer.dll";
-                _gridViewerProcess.StartInfo.WorkingDirectory = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                _gridViewerProcess.StartInfo.FileName = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "GridViewer.app", "Contents", "MacOS", "GridViewer");
 
                 _gridViewerProcess.StartInfo.CreateNoWindow = true;
                 _gridViewerProcess.StartInfo.UseShellExecute = false;
@@ -80,13 +78,21 @@ namespace PSmacOS
                     Console.WriteLine(data.Data);
                 };
 
+                try
+                {
+                    Console.WriteLine("Starting GridViewer from nativeBridge");
+                    _gridViewerProcess.Start();
+                    _gridViewerProcess.BeginOutputReadLine();
+                    _gridViewerProcess.BeginErrorReadLine();
+                    Console.WriteLine("Started GridViewer from nativeBridge");
+                } catch (Exception ex) {
+                    Console.WriteLine(ex);
 
-                Console.WriteLine("Starting GridViewer from nativeBridge");
-                _gridViewerProcess.Start();
-                _gridViewerProcess.BeginOutputReadLine();
-                _gridViewerProcess.BeginErrorReadLine();
-                Console.WriteLine("Started GridViewer from nativeBridge");
+                    Console.WriteLine(ex.Message);
 
+                    Console.WriteLine(ex.StackTrace);
+
+                }
             }
         }
 
@@ -98,7 +104,7 @@ namespace PSmacOS
                 Plain = 3
             }
 
-            [DllImport("./libpsmacosbridging/build/lib/libpsmacosbridging")]
+            [DllImport("./libpsmacosbridging")]
             internal extern static ulong showMessageBox(double timeoutSeconds, ulong type, IntPtr title, IntPtr message, IntPtr buttonOneLabel, IntPtr buttonTwoLabel, IntPtr buttonThreeLabel);
 
             public static ulong Show(double timeoutSeconds, MessageBox.Type type, string title, string message, string buttonOneLabel, string buttonTwoLabel, string buttonThreeLabel) 

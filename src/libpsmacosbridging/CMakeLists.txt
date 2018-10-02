@@ -28,7 +28,6 @@ set(OBJC_HEADERS
 )
 
 set(OBJC_SOURCE
-    bridge_gridview.m
     bridge_memory.m
     bridge_messagebox.m
     bridge_pasteboard.m
