@@ -42,19 +42,6 @@ namespace PSmacOS
         {
             private static Process _gridViewerProcess = null;
 
-            public static void End()
-            {
-                Console.WriteLine("Waiting for gv to exit");
-                _gridViewerProcess.WaitForExit();
-            }
-
-            public static void AddRecord(PSObject obj)
-            {
-                var recordJson = PSObjectHelper.ToJson(obj);
-                Console.WriteLine("Writing to stdin {0}", recordJson);
-                _gridViewerProcess.StandardInput.WriteLine(recordJson);
-            }
-
             public static void Start()
             {
                 _gridViewerProcess = new Process();
@@ -93,6 +80,19 @@ namespace PSmacOS
                     Console.WriteLine(ex.StackTrace);
 
                 }
+            }
+
+            public static void AddRecord(PSObject obj)
+            {
+                var recordJson = PSObjectHelper.ToJson(obj);
+                Console.WriteLine("Writing to stdin {0}", recordJson);
+                _gridViewerProcess.StandardInput.WriteLineAsync(recordJson);
+            }
+
+            public static void End()
+            {
+                Console.WriteLine("Waiting for gv to exit");
+                _gridViewerProcess.WaitForExit();
             }
         }
 
