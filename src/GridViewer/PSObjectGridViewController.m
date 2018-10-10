@@ -97,7 +97,7 @@ uint8_t _buffer[TRY_TO_READ];
     NSLog(@"init view controller start");
 
     NSStream *stdinStream = [[NSInputStream alloc] initWithFileAtPath:@"/dev/stdin"];
-    [iStstdinStreamream setDelegate:self];
+    [stdinStream setDelegate:self];
     [stdinStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
     [stdinStream open];
 
