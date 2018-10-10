@@ -6,6 +6,8 @@ using System.Threading;
 using System.Reflection;
 using System.Diagnostics;
 using System.IO;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace PSmacOS
 {
@@ -42,6 +44,8 @@ namespace PSmacOS
         {
             private static Process _gridViewerProcess = null;
 
+            private static bool _firstRecordSent = false;
+            
             public static void Start()
             {
                 _gridViewerProcess = new Process();
@@ -84,9 +88,28 @@ namespace PSmacOS
 
             public static void AddRecord(PSObject obj)
             {
+                if (_firstRecordSent == false) {
+                    var titles = new List<string>();
+                    var typeStrings = new List<string>();
+
+                    foreach (var prop in obj.Properties)
+                    {
+                        titles.Add(prop.Name.Replace("\"","\\\""));
+                        typeStrings.Add(prop.TypeNameOfValue);
+                    }
+                    var titlesCsv = string.Format("\"{0}\"", string.Join("\",\"", titles.ToArray()));
+                    var typeStringCsv = string.Join(",", typeStrings.ToArray());
+
+                    Console.WriteLine("Titles: {0}", titlesCsv);
+                    _gridViewerProcess.StandardInput.WriteLine(titlesCsv);
+                    Console.WriteLine("Types: {0}", typeStringCsv);
+                    _gridViewerProcess.StandardInput.WriteLine(typeStringCsv);
+                    _firstRecordSent = true;
+                }
+
                 var recordJson = PSObjectHelper.ToJson(obj);
-                Console.WriteLine("Writing to stdin {0}", recordJson);
-                _gridViewerProcess.StandardInput.WriteLineAsync(recordJson);
+                //Console.WriteLine("Writing to stdin {0}", recordJson);
+                _gridViewerProcess.StandardInput.WriteLine(recordJson);
             }
 
             public static void End()

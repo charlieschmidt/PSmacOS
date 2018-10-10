@@ -33,12 +33,7 @@
     [appMenu addItem:quitMenuItem];
 }
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
-    NSLog(@"appdid finish launching");
-    //PSObjectGridViewController *controller = [[PSObjectGridViewController alloc] init];
-    
     [self createMenu];
-    //self.window = [NSWindow windowWithContentViewController:controller];
-    //self.window.contentViewController = controller;
     
     [self.window orderFrontRegardless];
     [self.window makeKeyAndOrderFront:nil];
@@ -51,6 +46,5 @@
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
 
 }
-
 
 @end

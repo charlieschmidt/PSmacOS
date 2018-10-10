@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="4fQ-iz-Ecf">
     <dependencies>
+        <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14313.18"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -33,19 +34,23 @@
                         <rect key="frame" x="0.0" y="0.0" width="480" height="270"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <searchField wantsLayer="YES" verticalHuggingPriority="750" fixedFrame="YES" textCompletion="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eqA-Nc-897">
+                            <searchField wantsLayer="YES" verticalHuggingPriority="750" textCompletion="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eqA-Nc-897">
                                 <rect key="frame" x="0.0" y="248" width="422" height="22"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <searchFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" usesSingleLineMode="YES" bezelStyle="round" id="53H-ru-1MH">
+                                <searchFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" usesSingleLineMode="YES" bezelStyle="round" sendsSearchStringImmediately="YES" sendsWholeSearchString="YES" id="53H-ru-1MH">
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                    <connections>
+                                        <action selector="searchFieldChanged:" target="POU-KC-hyu" id="VCe-bn-nS9"/>
+                                    </connections>
                                 </searchFieldCell>
+                                <connections>
+                                    <outlet property="delegate" destination="POU-KC-hyu" id="0C1-bC-eEB"/>
+                                </connections>
                             </searchField>
-                            <scrollView fixedFrame="YES" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XWv-vd-RCV" userLabel="Bordered Scroll View - Table Viewports">
+                            <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XWv-vd-RCV" userLabel="Bordered Scroll View - Table Viewports">
                                 <rect key="frame" x="0.0" y="0.0" width="480" height="250"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <clipView key="contentView" ambiguous="YES" id="Llh-WA-3kE">
+                                <clipView key="contentView" id="Llh-WA-3kE">
                                     <rect key="frame" x="1" y="0.0" width="478" height="249"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
@@ -90,16 +95,27 @@
                                 </tableHeaderView>
                             </scrollView>
                         </subviews>
+                        <constraints>
+                            <constraint firstItem="eqA-Nc-897" firstAttribute="leading" secondItem="XWv-vd-RCV" secondAttribute="leading" id="Lbv-CT-5Lx"/>
+                            <constraint firstItem="eqA-Nc-897" firstAttribute="leading" secondItem="9y8-Qg-s2E" secondAttribute="leading" id="YCE-Lv-rwr"/>
+                            <constraint firstItem="XWv-vd-RCV" firstAttribute="top" secondItem="9y8-Qg-s2E" secondAttribute="top" constant="20" symbolic="YES" id="Z8b-gM-jOb"/>
+                            <constraint firstAttribute="trailing" secondItem="XWv-vd-RCV" secondAttribute="trailing" id="a2n-7x-6ty"/>
+                            <constraint firstAttribute="trailing" secondItem="eqA-Nc-897" secondAttribute="trailing" constant="58" id="dpL-3e-uIe"/>
+                            <constraint firstItem="eqA-Nc-897" firstAttribute="top" secondItem="9y8-Qg-s2E" secondAttribute="top" id="lza-u1-Bbu"/>
+                            <constraint firstAttribute="bottom" secondItem="XWv-vd-RCV" secondAttribute="bottom" id="pbS-TB-joA"/>
+                        </constraints>
                     </view>
                     <connections>
                         <outlet property="objects" destination="801-Pi-HA1" id="G8C-Sm-kSe"/>
+                        <outlet property="searchField" destination="53H-ru-1MH" id="tFY-32-AVi"/>
                         <outlet property="tableView" destination="ojy-4u-A1f" id="xhv-X9-GVO"/>
                     </connections>
                 </viewController>
                 <customObject id="wPE-fx-gn8" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
                 <arrayController id="801-Pi-HA1"/>
+                <userDefaultsController representsSharedInstance="YES" id="Fr8-Rb-XkP"/>
             </objects>
-            <point key="canvasLocation" x="141" y="511"/>
+            <point key="canvasLocation" x="157" y="726"/>
         </scene>
     </scenes>
 </document>
