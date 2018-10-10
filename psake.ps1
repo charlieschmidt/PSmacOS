@@ -58,7 +58,11 @@ Task CompileObjC {
     $lines
     'Compiling Objective-C bridging code'
     push-location -Path "$ProjectRoot/src/GridViewer"
-        xcrun xcodebuild build -configuration Release -project GridViewer.xcodeproj -scheme GridViewer
+        xcrun xcodebuild -alltargets
+        if ($lastexitcode -ne 0)
+        {
+            throw "xcrun xcodebuild failed"
+        }
         copy-item "./build/Release/GridViewer.app" $ENV:BHBuildOutput\PSmacOS\bin -Recurse -Force
     pop-location
 
