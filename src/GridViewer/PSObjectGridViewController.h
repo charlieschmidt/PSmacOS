@@ -7,13 +7,9 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import <Foundation/Foundation.h>
 
-NS_ASSUME_NONNULL_BEGIN
 
-@interface PSObjectGridViewController : NSViewController <NSStreamDelegate, NSTableViewDataSource, NSTableViewDelegate>
-
-- (void)stream:(NSStream *)stream handleEvent:(NSStreamEvent)eventCode ;
+@interface PSObjectGridViewController : NSViewController 
 
 @end
-
-NS_ASSUME_NONNULL_END

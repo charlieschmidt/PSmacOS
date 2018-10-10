@@ -7,12 +7,18 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import <Foundation/Foundation.h>
 
 #import "GridViewerApplicationDelegate.h"
+
 int main(int argc, const char * argv[]) {
     
+    GridViewerApplicationDelegate *del = [[GridViewerApplicationDelegate alloc] init];
+    
     [NSApplication sharedApplication];
-    [NSApp setDelegate: [[GridViewerApplicationDelegate alloc] init]];
+    [NSApp setDelegate:del];
+    
+    
     
     return NSApplicationMain(argc, argv);
 }
