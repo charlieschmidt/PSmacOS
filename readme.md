@@ -18,7 +18,8 @@ PowerShell module containing convience or platform-specific cmdlets for macOS.
 ## In Progress
 
 * [outgridview branch]( 
-https://github.com/charlieschmidt/PSmacOS/tree/outgridview) - [![Build Status](https://travis-ci.com/charlieschmidt/PSmacOS.svg?branch=master)]
+https://github.com/charlieschmidt/PSmacOS/tree/outgridview)
+
     * `Show-MessageBox` - show a message/alert box
 
     * `Out-GridView` - native implementation of the PowerShell 5.1 command
