@@ -10,44 +10,18 @@
 
 #import "PSObjectGridViewController.h"
 
-@interface PSObjectGridViewController () <NSTableViewDataSource, NSTableViewDelegate, NSStreamDelegate>
-
-@property (strong) IBOutlet NSArrayController *objects;
-
-@property (weak) IBOutlet NSSearchFieldCell *searchField;
-
-@property (weak) IBOutlet NSTableView *tableView;
-
-- (IBAction)searchFieldChanged:(id)sender;
-
-// Buffer to hold any unprocessed string data after each loop.
-@property (strong, nonatomic) NSString *stringBuffer;
-
-@end
-
-
 
 @implementation NSDictionary (PSObject)
 
-- (NSDictionary *)dictionaryFromPSObjectJSON {
+// a lot of the rest of the code is much easier to deal with if we make the object (stored as a dictionary) have lowercase keys.  we can't ensure that all the powershell objects
+// coming in on the pipe will all have their property names in the same string case
+// this is an extension method to convert a dictionary to one with lowercase keys
+- (NSDictionary *)dictionaryWithLowerCaseKeys {
     NSMutableDictionary *result = [NSMutableDictionary dictionaryWithCapacity:0];
     NSString *key;
     
     for (key in self) {
         id val = [self objectForKey:key];
-        
-        if (val == (id)[NSNull null]) {
-            //NSLog(@"%@ is null",key);
-            Class klass = [val class];
-            if ([klass isSubclassOfClass:[NSString class]]) {
-              //  NSLog(@"its a string");
-                val = @"";
-            }
-            else if ([klass isSubclassOfClass:[NSNumber class]]) {
-                //NSLog(@"its a number");
-                val = [[NSNumber alloc] init];
-            }
-        }
         
         [result setObject:val forKey:[key lowercaseString]];
     }
@@ -57,29 +31,84 @@
 
 @end
 
+@interface PSObjectGridViewController () <NSTableViewDataSource, NSTableViewDelegate, NSStreamDelegate>
+
+// the objects from the pipeline
+@property (strong) IBOutlet NSArrayController *objects;
+
+@property (weak) IBOutlet NSSearchFieldCell *searchField;
+@property (weak) IBOutlet NSTableView *tableView;
+
+- (IBAction)searchFieldChanged:(id)sender;
+- (IBAction)closeButtonClicked:(id)sender;
+- (IBAction)okButtonClicked:(id)sender;
+
+// keep track of (and update as more come in over the pipeline) the objc Class being used to store each key/title/column/property
+@property (strong, nonatomic) NSMutableDictionary *keyClasses;
+
+// Buffer to hold any unprocessed string data after each loop.
+@property (strong, nonatomic) NSString *stringBuffer;
+
+@end
+
+
+
+
+
 
 
 @implementation PSObjectGridViewController
 
 @synthesize stringBuffer;
 @synthesize objects;
+@synthesize keyClasses;
 
 - (IBAction)searchFieldChanged:(id)sender {
-    NSLog(@"asked for predicate");
-    if (allKeys && [allKeys count] > 0 && [self.searchField.stringValue isEqualToString:@""] == false) {
+    // the search field has changed
+    if (self.keyClasses.allKeys && [self.keyClasses.allKeys count] > 0 && [self.searchField.stringValue isEqualToString:@""] == false) {
+        // it has text
+        
+        // build a predicate of () or () or () where each element is a comparison one of the object's properties
         NSMutableArray *subPredicates = [NSMutableArray array];
-        for (NSString *key in allKeys) {
-            NSPredicate *subPredicate = [NSPredicate predicateWithFormat:@"%K contains %@", key, self.searchField.stringValue];
+        
+        for (NSString *key in self.keyClasses.allKeys) {
+            // foreach key, add a () clause
+            NSPredicate *subPredicate;
+            Class klass = [keyClasses objectForKey:key];
+            
+            if ([klass isSubclassOfClass:[NSString class]]) {
+                // if it's a string, normal comparison
+                subPredicate = [NSPredicate predicateWithFormat:@"(%K != nil AND %K CONTAINS[cd] %@)", key, key, self.searchField.stringValue];
+            } else if ([klass isSubclassOfClass:[NSNumber class]]) {
+                // if it's a number, check if null and then compare to stringvalue
+                subPredicate = [NSPredicate predicateWithFormat:@"(%K != nil AND %K.stringValue CONTAINS[cd] %@)", key, key, self.searchField.stringValue];
+            }
+            
             [subPredicates addObject:subPredicate];
         }
+        
+        // create master predicate of all subpredicates OR'd together
         NSPredicate *filter = [NSCompoundPredicate orPredicateWithSubpredicates:subPredicates];
-        NSLog(@"predicate is %@",filter);
         [self.objects setFilterPredicate:filter];
+        
         [self.tableView reloadData];
     } else {
+        // clear predicates
         [self.objects setFilterPredicate:nil];
         [self.tableView reloadData];
     }
+}
+
+- (IBAction)closeButtonClicked:(id)sender {
+    [self.view.window close];
+}
+
+- (IBAction)okButtonClicked:(id)sender {
+    for (id obj in [self.objects.arrangedObjects objectsAtIndexes:[self.tableView selectedRowIndexes]]) {
+        NSString *s = [[NSString alloc] initWithFormat:@"%@\n",[obj objectForKey:@"__gridviewer_psobject_index"]];
+        [[NSFileHandle fileHandleWithStandardOutput] writeData: [s dataUsingEncoding: NSUTF8StringEncoding]];
+    }
+    [self.view.window close];
 }
 
 unsigned int const TRY_TO_READ = 1024;
@@ -124,12 +153,15 @@ uint8_t _buffer[TRY_TO_READ];
 }
 
 - (void)stream:(NSStream *)stream handleEvent:(NSStreamEvent)streamEvent {
-    if (streamEvent & NSStreamEventErrorOccurred) {
-        return;
-    }
     if (streamEvent & NSStreamEventHasBytesAvailable) {
         [self readDataFromStream:stream];
     }
+    
+    if (streamEvent & NSStreamEventErrorOccurred) {
+        //! FIXME - consider probably closing the window or.. bailing out somehow here?
+        return;
+    }
+    
     if (streamEvent & NSStreamEventEndEncountered) {
         [stream close];
         [stream removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
@@ -141,134 +173,133 @@ uint8_t _buffer[TRY_TO_READ];
     }
 }
 
-
-
 - (void)viewDidLoad {
-    NSLog(@"viewDidLoad start");
     [super viewDidLoad];
     
-    
+    // store the key -> class
+    keyClasses = [[NSMutableDictionary alloc] init];
+
+    // read from stdin in the 'background'
     NSStream *stdinStream = [[NSInputStream alloc] initWithFileAtPath:@"/dev/stdin"];
     [stdinStream setDelegate:self];
     [stdinStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
     [stdinStream open];
     
-    NSLog(@"viewDidLoad end");
-    
     /*
-     [self addJsonObject:@"{\"a\":\"the thing\",\"b\":\"the other\"}"];
-     [self addJsonObject:@"{\"a\":\"2the thing\",\"b\":\"2the other\"}"];
-     [self addJsonObject:@"{\"a\":\"3the thing\",\"b\":\"3the other\"}"];
-     */
+    [self processLine:@"\"a\",\"b\""];
+    [self processLine:@""];
+    [self processLine:@"{\"a\":\"the thing\",\"b\":\"the other\"}"];
+    [self processLine:@"{\"a\":\"2the thing\",\"b\":\"2the other\"}"];
+    [self processLine:@"{\"a\":\"3the thing\",\"b\":\"3the other\"}"];
+    */
 }
 
-typedef NS_ENUM(NSUInteger, LineType) {
-    Titles = 0,
-    Types = 1,
-    Data = 2
-};
+unsigned int linesRead = 0;
 
-LineType currentLineType = Titles;
-
-- (void)processLine:(NSString*)line {
-    switch (currentLineType) {
-        case Titles:
-            [self setupColumns:line];
-            currentLineType = Types;
-            break;
-        case Types:
-            //[self setupTypes:line];
-            currentLineType = Data;
-            break;
-        case Data:
-            [self addJsonObject:line];
-            break;
-    }
-}
-
-- (void)addJsonObject:(NSString*)json {
+// process an object from the pipeline
+- (void)processLine:(NSString*)json {
     if (json != nil && [json isEqualToString:@""] == false) {
-        NSError *jsonError;
+        // parse the json
         NSData *objectData = [json dataUsingEncoding:NSUTF8StringEncoding];
-        NSDictionary *object = [NSJSONSerialization JSONObjectWithData:objectData
-                                                               options:0
-                                                                 error:&jsonError];
+        NSError *jsonError;
+        NSDictionary *objectWithTitles = [NSJSONSerialization JSONObjectWithData:objectData
+                                                                options:0
+                                                                  error:&jsonError];
+        NSDictionary *objectWithKeys = [objectWithTitles dictionaryWithLowerCaseKeys];
         
-        [self.objects addObject:[object dictionaryFromPSObjectJSON]];
+        // foreach property/title on the object
+        for (NSString *title in objectWithTitles) {
+            // make the key - lowercase, because we can't be sure they'll all come in the same string case over the pipeline
+            NSString *key = [title lowercaseString];
+            
+            // find the column we've added alrady
+            NSTableColumn *column = [self.tableView tableColumnWithIdentifier:key];
+            
+            if (column == nil) {
+                // if no column, add one
+                NSTableColumn *column = [[NSTableColumn alloc] initWithIdentifier:key];
+                column.title = title;
+                
+                NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:column.identifier ascending:YES selector:@selector(compare:)];
+                [column setSortDescriptorPrototype:sortDescriptor];
+                
+                
+                NSMutableDictionary *bindingOptions = [NSMutableDictionary dictionary];
+                [bindingOptions setObject:@""
+                                   forKey:NSNullPlaceholderBindingOption];
+                
+                NSString *keyPath = [NSString stringWithFormat:@"arrangedObjects.%@",key];
+                [column bind:NSValueBinding
+                    toObject:self.objects
+                 withKeyPath:keyPath
+                     options:bindingOptions];
+                
+                [self.tableView addTableColumn:column];
+            }
+            
+            // find the class for this property
+            Class klass = [keyClasses objectForKey:key];
+            if (klass == nil) {
+                // if we havn't seen this key before, let's see if it has a type
+                id val = [objectWithKeys objectForKey:key];
+                
+                if (val != (id)[NSNull null]) {
+                    // it does have a type, add that to the cache so we can use it on display later
+                    klass = [val class]; // val will have a class, because its not null per above
+                    [keyClasses setObject:klass forKey:key];
+                }
+            }
+            
+        }
+        
+        [objectWithKeys setValue:[[NSNumber alloc] initWithInt:linesRead++] forKey:@"__gridviewer_psobject_index"];
+        
+        // add the object (with lowercase keys) to the controller
+        [self.objects addObject:objectWithKeys];
     }
-}
-
-NSArray *allKeys;
-
-- (void)setupColumns:(NSString*)titlesCSV {
-    NSLog(@"setupColumns start");
-    NSArray *titles = [titlesCSV componentsSeparatedByString:@","];
-    NSMutableArray *keys = [[NSMutableArray alloc] init];
-    
-    for (NSString *title in titles) {
-        // fix the csv escaping
-        NSMutableString *mTitle = [title mutableCopy];
-        [mTitle replaceOccurrencesOfString:@"\\\"" withString:@"\"" options:0 range:NSMakeRange(0, [mTitle length])];
-        [mTitle deleteCharactersInRange:NSMakeRange(0, 1)];
-        [mTitle deleteCharactersInRange:NSMakeRange([mTitle length] - 1, 1)];
-        
-        NSString *key = [mTitle lowercaseString];
-        [keys addObject:key];
-        NSTableColumn *column = [[NSTableColumn alloc] initWithIdentifier:key];
-        column.title = mTitle;
-        NSString *keyPath = [NSString stringWithFormat:@"arrangedObjects.%@",key];
-        [column bind:NSValueBinding toObject:self.objects withKeyPath:keyPath options:nil];
-        
-        [self.tableView addTableColumn:column];
-    }
-    
-    allKeys = [keys copy];
-    NSLog(@"setupColumns end");
 }
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView {
-    NSLog(@"numberOfRowsInTableView");
     return [self.objects.arrangedObjects count];
 }
 
-- (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
-    return [[self.objects.arrangedObjects objectAtIndex:row] valueForKey:tableColumn.identifier];
+- (void)tableView:(NSTableView *)tableView sortDescriptorsDidChange:(NSArray *)sortDescriptors
+{
+    [self.objects setSortDescriptors:sortDescriptors];
+    [tableView reloadData];
 }
 
-/*
--(void)controlTextDidChange:(NSNotification *)notification {
-    NSLog(@"interesting");
-    NSString *searchString = self.searchField.stringValue;
-    NSLog(@"hrm %@",searchString);
-    NSMutableArray *predicateArray = [[NSMutableArray alloc] init];
+- (NSView *)tableView:(NSTableView *)tableView
+   viewForTableColumn:(NSTableColumn *)tableColumn
+                  row:(NSInteger)row {
+    id originalValue = [[self.objects.arrangedObjects objectAtIndex:row] valueForKey:tableColumn.identifier];
+    NSString *newValue;
     
-    for (NSString *key in allKeys) {
-        NSLog(@"add search for %@",key);
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:[NSString stringWithFormat:@"%@ containts %@",key,searchString]];
-     
-        [predicateArray addObject:predicate];
+    if (originalValue == (id)[NSNull null] || originalValue == nil) {
+        // if the original value is null, return an empty string for display
+        newValue = @"";
+    } else {
+        // find the best way to display the value
+        Class klass = [keyClasses objectForKey:tableColumn.identifier];
+        
+        if ([klass isSubclassOfClass:[NSString class]]) {
+            //if a string, display that
+            newValue =  originalValue;
+        } else if ([klass isSubclassOfClass:[NSNumber class]]) {
+            // if a number, format and display that
+            NSString *numberStr = [NSNumberFormatter localizedStringFromNumber:originalValue numberStyle:NSNumberFormatterDecimalStyle];
+            newValue =  numberStr;
+        } else {
+            // ?
+            newValue =  @"NULLLLLL";
+        }
     }
+    NSTableCellView *cellView = [tableView makeViewWithIdentifier:@"DefaultCellView" owner:self];
+   // [cellView.textField bind:NSValueBinding toObject:]
+    cellView.textField.stringValue = newValue;
     
-    NSPredicate *p = [NSCompoundPredicate orPredicateWithSubpredicates:predicateArray];
-    //[self.objects setFilterPredicate:p];
-    
-
-    NSString *search1 =  @"name contains $value";
-    
-    // search all
-    NSDictionary *options = [NSDictionary dictionaryWithObjectsAndKeys:
-                             NSLocalizedString(@"All",@"Search field placeholder"),
-                             NSDisplayNameBindingOption, search1,
-                             NSPredicateFormatBindingOption, nil];
-    [self.searchField bind:NSPredicateBinding
-                  toObject:self.objects
-               withKeyPath:@"filterPredicate"
-                   options: options];
-
-    [self.tableView reloadData];
+    return cellView;
 }
-*/
-
 
 
 @end
