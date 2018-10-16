@@ -5,7 +5,7 @@ using System.Text;
 using System.Collections.Generic;
 using System.Collections;
 
-namespace PSmacOS
+namespace PSmacOS.Cmdlets
 {
     [Cmdlet(VerbsCommon.Show, "MessageBox",DefaultParameterSetName = "SwitchButtons")]
     public class ShowMessageBox : PSCmdlet

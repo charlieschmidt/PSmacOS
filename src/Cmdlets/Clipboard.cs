@@ -5,7 +5,7 @@ using System.Text;
 using System.Collections.Generic;
 using System.Collections;
 
-namespace PSmacOS
+namespace PSmacOS.Cmdlets
 {
 	[OutputType(typeof(string))]
     [Cmdlet(VerbsCommon.Get, "Clipboard")]
