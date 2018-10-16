@@ -332,5 +332,12 @@ namespace PSmacOS
             }
             return result;
         }
+
+        private static readonly PSObject s_emptyPSObject = new PSObject(string.Empty);
+
+        internal static PSObject AsPSObject(object obj)
+        {
+            return (obj == null) ? s_emptyPSObject : PSObject.AsPSObject(obj);
+        }
     }
 }
