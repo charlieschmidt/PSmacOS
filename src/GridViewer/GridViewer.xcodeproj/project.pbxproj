@@ -7,22 +7,28 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		CBD2B96A2161E7790012F9B6 /* GridViewerApplicationDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = CBD2B9692161E7790012F9B6 /* GridViewerApplicationDelegate.m */; };
+		CB213ECA2175AF50002020E7 /* ps_black_64.svg in Resources */ = {isa = PBXBuildFile; fileRef = CB213EC92175AF4F002020E7 /* ps_black_64.svg */; };
+		CB78E65121F951F000CF99D0 /* GVWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = CB78E65021F951F000CF99D0 /* GVWindowController.m */; };
+		CBD2B96A2161E7790012F9B6 /* GVApplicationDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = CBD2B9692161E7790012F9B6 /* GVApplicationDelegate.m */; };
 		CBD2B96C2161E77B0012F9B6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CBD2B96B2161E77B0012F9B6 /* Assets.xcassets */; };
 		CBD2B9722161E77B0012F9B6 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = CBD2B9712161E77B0012F9B6 /* main.m */; };
-		CBD2B9832161FAD60012F9B6 /* PSObjectGridViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CBD2B9812161FAD60012F9B6 /* PSObjectGridViewController.m */; };
+		CBD2B9832161FAD60012F9B6 /* GVObjectTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CBD2B9812161FAD60012F9B6 /* GVObjectTableViewController.m */; };
 		CBD2B98A21630BB40012F9B6 /* Storyboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CBD2B98921630BB40012F9B6 /* Storyboard.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		CB213EC92175AF4F002020E7 /* ps_black_64.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = ps_black_64.svg; sourceTree = "<group>"; };
+		CB213ECB2175B083002020E7 /* GridIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = GridIcon.icns; path = /Users/charlie/Projects/PSmacOS/src/GridViewer/GridIcon.icns; sourceTree = "<absolute>"; };
+		CB78E64F21F951F000CF99D0 /* GVWindowController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GVWindowController.h; sourceTree = "<group>"; };
+		CB78E65021F951F000CF99D0 /* GVWindowController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GVWindowController.m; sourceTree = "<group>"; };
 		CBD2B9652161E7790012F9B6 /* GridViewer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GridViewer.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		CBD2B9682161E7790012F9B6 /* GridViewerApplicationDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GridViewerApplicationDelegate.h; sourceTree = "<group>"; };
-		CBD2B9692161E7790012F9B6 /* GridViewerApplicationDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GridViewerApplicationDelegate.m; sourceTree = "<group>"; };
+		CBD2B9682161E7790012F9B6 /* GVApplicationDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GVApplicationDelegate.h; sourceTree = "<group>"; };
+		CBD2B9692161E7790012F9B6 /* GVApplicationDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GVApplicationDelegate.m; sourceTree = "<group>"; };
 		CBD2B96B2161E77B0012F9B6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CBD2B9702161E77B0012F9B6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CBD2B9712161E77B0012F9B6 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		CBD2B9802161FAD60012F9B6 /* PSObjectGridViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PSObjectGridViewController.h; sourceTree = "<group>"; };
-		CBD2B9812161FAD60012F9B6 /* PSObjectGridViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PSObjectGridViewController.m; sourceTree = "<group>"; };
+		CBD2B9802161FAD60012F9B6 /* GVObjectTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GVObjectTableViewController.h; sourceTree = "<group>"; };
+		CBD2B9812161FAD60012F9B6 /* GVObjectTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GVObjectTableViewController.m; sourceTree = "<group>"; };
 		CBD2B98921630BB40012F9B6 /* Storyboard.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Storyboard.storyboard; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -40,15 +46,19 @@
 		CBD2B95C2161E7790012F9B6 = {
 			isa = PBXGroup;
 			children = (
-				CBD2B98921630BB40012F9B6 /* Storyboard.storyboard */,
-				CBD2B9682161E7790012F9B6 /* GridViewerApplicationDelegate.h */,
-				CBD2B9692161E7790012F9B6 /* GridViewerApplicationDelegate.m */,
 				CBD2B96B2161E77B0012F9B6 /* Assets.xcassets */,
+				CB213ECB2175B083002020E7 /* GridIcon.icns */,
+				CBD2B9682161E7790012F9B6 /* GVApplicationDelegate.h */,
+				CBD2B9692161E7790012F9B6 /* GVApplicationDelegate.m */,
+				CBD2B9802161FAD60012F9B6 /* GVObjectTableViewController.h */,
+				CBD2B9812161FAD60012F9B6 /* GVObjectTableViewController.m */,
+				CB78E64F21F951F000CF99D0 /* GVWindowController.h */,
+				CB78E65021F951F000CF99D0 /* GVWindowController.m */,
 				CBD2B9702161E77B0012F9B6 /* Info.plist */,
 				CBD2B9712161E77B0012F9B6 /* main.m */,
-				CBD2B9802161FAD60012F9B6 /* PSObjectGridViewController.h */,
-				CBD2B9812161FAD60012F9B6 /* PSObjectGridViewController.m */,
 				CBD2B9662161E7790012F9B6 /* Products */,
+				CB213EC92175AF4F002020E7 /* ps_black_64.svg */,
+				CBD2B98921630BB40012F9B6 /* Storyboard.storyboard */,
 			);
 			sourceTree = "<group>";
 		};
@@ -118,6 +128,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CBD2B98A21630BB40012F9B6 /* Storyboard.storyboard in Resources */,
+				CB213ECA2175AF50002020E7 /* ps_black_64.svg in Resources */,
 				CBD2B96C2161E77B0012F9B6 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -129,9 +140,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CB78E65121F951F000CF99D0 /* GVWindowController.m in Sources */,
 				CBD2B9722161E77B0012F9B6 /* main.m in Sources */,
-				CBD2B9832161FAD60012F9B6 /* PSObjectGridViewController.m in Sources */,
-				CBD2B96A2161E7790012F9B6 /* GridViewerApplicationDelegate.m in Sources */,
+				CBD2B9832161FAD60012F9B6 /* GVObjectTableViewController.m in Sources */,
+				CBD2B96A2161E7790012F9B6 /* GVApplicationDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

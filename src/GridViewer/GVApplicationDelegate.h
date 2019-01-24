@@ -1,5 +1,5 @@
 //
-//  GridViewerApplicationDelegate.h
+//  GVApplicationDelegate.h
 //  GridViewer
 //
 //  Created by Charlie Schmidt on 10/1/18.
@@ -8,8 +8,9 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface GridViewerApplicationDelegate : NSObject <NSApplicationDelegate>
+@interface GVApplicationDelegate : NSObject <NSApplicationDelegate>
 
+@property (strong,nonatomic) NSString *title;
 
 @end
 

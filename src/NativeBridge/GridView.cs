@@ -24,8 +24,9 @@ namespace PSmacOS.NativeBridge
         {
             _gridViewerProcess = new Process();
 
-            _gridViewerProcess.StartInfo.FileName = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "GridViewer.app", "Contents", "MacOS", "GridViewer");
-
+            _gridViewerProcess.StartInfo.FileName = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Contents", "MacOS", "GridViewer");
+            _gridViewerProcess.StartInfo.Arguments = string.Format("\"{0}\"", title.Replace("\"", "\\\""));
+            
             _gridViewerProcess.StartInfo.CreateNoWindow = true;
             _gridViewerProcess.StartInfo.UseShellExecute = false;
 
@@ -43,6 +44,7 @@ namespace PSmacOS.NativeBridge
             };
             _gridViewerProcess.ErrorDataReceived += (sender, data) =>
             {
+                Console.WriteLine(data.Data);
             };
 
             try
@@ -53,12 +55,7 @@ namespace PSmacOS.NativeBridge
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
-
-                Console.WriteLine(ex.Message);
-
-                Console.WriteLine(ex.StackTrace);
-
+                cmdlet.ThrowTerminatingError(new ErrorRecord(ex, "GridViewException", ErrorCategory.OperationStopped, null));
             }
         }
 
@@ -67,9 +64,7 @@ namespace PSmacOS.NativeBridge
             objects.Add(obj);
 
             var recordJson = PSObjectHelper.ToJson(obj);
-            //Console.WriteLine("Writing to stdin {0}", recordJson);
             _gridViewerProcess.StandardInput.WriteLine(recordJson);
-
         }
 
         public static List<PSObject> GetSelectedItems() {

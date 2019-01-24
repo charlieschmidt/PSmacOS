@@ -1,4 +1,5 @@
-param ($Task = 'Default')
+[cmdletbinding()]
+param ($Task = 'Default',[switch]$Fast)
 
 # Grab nuget bits, install modules, set build variables, start build.
 Get-PackageProvider -Name NuGet -ForceBootstrap | Out-Null
@@ -51,12 +52,17 @@ function Resolve-Module
     }
 }
 
+if ($Fast.IsPresent -eq $false) {
 # Grab nuget bits, install modules, set build variables, start build.
-Get-PackageProvider -Name NuGet -ForceBootstrap | Out-Null
+    Get-PackageProvider -Name NuGet -ForceBootstrap | Out-Null
 
-Resolve-Module Psake, PSDeploy, Pester, BuildHelpers
+    Resolve-Module Psake, PSDeploy, Pester, BuildHelpers
+} else {
+    Import-Module Psake, PSDeploy, Pester, BuildHelpers
+}
 
 Set-BuildEnvironment -Force
 
 Invoke-psake -buildFile .\psake.ps1 -taskList $Task -nologo
+
 exit ( [int]( -not $psake.build_success ) )

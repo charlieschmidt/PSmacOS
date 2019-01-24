@@ -1,5 +1,5 @@
 //
-//  PSObjectGridViewController.h
+//  GVObjectTableViewController.h
 //  GridViewer
 //
 //  Created by Charlie Schmidt on 10/1/18.
@@ -10,6 +10,6 @@
 #import <Foundation/Foundation.h>
 
 
-@interface PSObjectGridViewController : NSViewController 
+@interface GVObjectTableViewController : NSViewController 
 
 @end

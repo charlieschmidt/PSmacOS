@@ -1,5 +1,5 @@
 //
-//  PSObjectGridViewController.m
+//  GVObjectTableViewController.m
 //  GridViewer
 //
 //  Created by Charlie Schmidt on 10/1/18.
@@ -8,7 +8,7 @@
 
 // line-by-line NSStreamDelegate inspired/copied from https://github.com/AlexMoffat/line-by-line-ios-file-reader
 
-#import "PSObjectGridViewController.h"
+#import "GVObjectTableViewController.h"
 
 
 @implementation NSDictionary (PSObject)
@@ -31,7 +31,7 @@
 
 @end
 
-@interface PSObjectGridViewController () <NSTableViewDataSource, NSTableViewDelegate, NSStreamDelegate>
+@interface GVObjectTableViewController () <NSTableViewDataSource, NSTableViewDelegate, NSStreamDelegate, NSSearchFieldDelegate>
 
 // the objects from the pipeline
 @property (strong) IBOutlet NSArrayController *objects;
@@ -57,13 +57,14 @@
 
 
 
-@implementation PSObjectGridViewController
+@implementation GVObjectTableViewController
 
 @synthesize stringBuffer;
 @synthesize objects;
 @synthesize keyClasses;
 
-- (IBAction)searchFieldChanged:(id)sender {
+- (void)controlTextDidChange:(NSNotification *)obj {
+    NSLog(@"in control text did change");
     // the search field has changed
     if (self.keyClasses.allKeys && [self.keyClasses.allKeys count] > 0 && [self.searchField.stringValue isEqualToString:@""] == false) {
         // it has text
@@ -97,6 +98,12 @@
         [self.objects setFilterPredicate:nil];
         [self.tableView reloadData];
     }
+    NSLog(@"in control text was changed");
+}
+
+
+- (IBAction)searchFieldChanged:(id)sender {
+   
 }
 
 - (IBAction)closeButtonClicked:(id)sender {
@@ -186,8 +193,6 @@ uint8_t _buffer[TRY_TO_READ];
     [stdinStream open];
     
     /*
-    [self processLine:@"\"a\",\"b\""];
-    [self processLine:@""];
     [self processLine:@"{\"a\":\"the thing\",\"b\":\"the other\"}"];
     [self processLine:@"{\"a\":\"2the thing\",\"b\":\"2the other\"}"];
     [self processLine:@"{\"a\":\"3the thing\",\"b\":\"3the other\"}"];
