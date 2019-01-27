@@ -21,7 +21,7 @@ Properties {
 }
 
 
-Task Default -Depends Init,Build,Test,Deploy
+Task Default -Depends Init,Clean,Build,Test,Deploy
 
 
 Task Init {
@@ -58,12 +58,18 @@ Task CompileObjC {
     $lines
     'Compiling Objective-C bridging code'
     push-location -Path "$ProjectRoot/src/GridViewer"
-        xcrun xcodebuild -alltargets
+        if ($env:BHBuildSystem -eq 'Travis CI') {
+            $configuration = "Release"
+        } else {
+            $Configuration = "Debug"
+        }
+
+        xcrun xcodebuild -alltargets -configuration $Configuration
         if ($lastexitcode -ne 0)
         {
             throw "xcrun xcodebuild failed"
         }
-        copy-item "./build/Release/GridViewer.app" $ENV:BHBuildOutput\PSmacOS\bin -Recurse -Force
+        Copy-Item -Path "./Build/$Configuration/GridViewer.app" -Destination $ENV:BHBuildOutput\PSmacOS\bin -Recurse -Force
     pop-location
 
     push-location -Path "$ProjectRoot/src/libpsmacosbridging"
