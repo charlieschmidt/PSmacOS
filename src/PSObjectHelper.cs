@@ -32,7 +32,7 @@ namespace PSmacOS
             {
                 return null;
             }
-            JsonSerializerSettings jsonSettings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.None, MaxDepth = 1024 };
+            JsonSerializerSettings jsonSettings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.None, MaxDepth = 1 };
             jsonSettings.Converters.Add(new StringEnumConverter());
             
             string output = JsonConvert.SerializeObject(preprocessedObject, jsonSettings);
@@ -235,6 +235,7 @@ namespace PSmacOS
 
             foreach (DictionaryEntry entry in dict)
             {
+                //Console.WriteLine($"dictionary: {entry.Key} = {entry.Value}");
                 string name = entry.Key as string;
                 if (name == null)
                 {
