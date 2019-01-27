@@ -15,15 +15,10 @@ PowerShell module containing convience or platform-specific cmdlets for macOS.
 
 * `Set-Clipboard` - set clipboard content
 
-## In Progress
+* `Show-MessageBox` - show a message/alert box
 
-* [outgridview branch]( 
-https://github.com/charlieschmidt/PSmacOS/tree/outgridview)
-
-    * `Show-MessageBox` - show a message/alert box
-
-    * `Out-GridView` - native implementation of the PowerShell 5.1 command
-
+* `Out-GridView` - show a searchable table of objects from the pipelin
+    
 ## Planned/Future
 
 * `Start-Process` or equivalent that knows about macOS app bundles [like the `open` command but powershelly]
