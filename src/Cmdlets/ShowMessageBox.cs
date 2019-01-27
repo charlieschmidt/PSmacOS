@@ -10,33 +10,32 @@ namespace PSmacOS.Cmdlets
     [Cmdlet(VerbsCommon.Show, "MessageBox",DefaultParameterSetName = "SwitchButtons")]
     public class ShowMessageBox : PSCmdlet
     {
-        [Parameter(Mandatory = false, ValueFromPipeline = true, ValueFromPipelineByPropertyName = true, ParameterSetName = "SwitchButtons")]
-        [Parameter(Mandatory = false, ValueFromPipeline = true, ValueFromPipelineByPropertyName = true, ParameterSetName = "AnyButtons")]
+        [Parameter(Mandatory = false, ParameterSetName = "SwitchButtons")]
+        [Parameter(Mandatory = false, ParameterSetName = "AnyButtons")]
         public string Title { get; set; } = string.Empty;
 
-        [Parameter(Mandatory = true, ValueFromPipeline = true, ValueFromPipelineByPropertyName = true, ParameterSetName = "SwitchButtons")]
-        [Parameter(Mandatory = true, ValueFromPipeline = true, ValueFromPipelineByPropertyName = true, ParameterSetName = "AnyButtons")]
+        [Parameter(Mandatory = true, ParameterSetName = "SwitchButtons")]
+        [Parameter(Mandatory = true, ParameterSetName = "AnyButtons")]
         [ValidateNotNullOrEmpty()]
         public string Message { get; set; }
 
-        [Parameter(Mandatory = false, ValueFromPipeline = true, ValueFromPipelineByPropertyName = true, ParameterSetName = "SwitchButtons")]
-        [Parameter(Mandatory = false, ValueFromPipeline = true, ValueFromPipelineByPropertyName = true, ParameterSetName = "AnyButtons")]
+        [Parameter(Mandatory = false, ParameterSetName = "SwitchButtons")]
+        [Parameter(Mandatory = false, ParameterSetName = "AnyButtons")]
         public double Timeout { get; set; } = 0;
 
-        [Parameter(Mandatory = false, ValueFromPipeline = true, ValueFromPipelineByPropertyName = true, ParameterSetName = "SwitchButtons")]
-        [Parameter(Mandatory = false, ValueFromPipeline = true, ValueFromPipelineByPropertyName = true, ParameterSetName = "AnyButtons")]
+        [Parameter(Mandatory = false, ParameterSetName = "SwitchButtons")]
+        [Parameter(Mandatory = false, ParameterSetName = "AnyButtons")]
         public NativeBridge.MessageBox.Type Type { get; set; } = NativeBridge.MessageBox.Type.Plain;
 
 
-        [Parameter(Mandatory = false, ValueFromPipeline = true, ValueFromPipelineByPropertyName = true, ParameterSetName = "AnyButtons")]
-        public string ButtonOneLabel { get; set; } = "OK";
+        [Parameter(Mandatory = false, ParameterSetName = "AnyButtons")]
+        public string ButtonOneLabel { get; set; } = "OK33234";
 
-        [Parameter(Mandatory = false, ValueFromPipeline = true, ValueFromPipelineByPropertyName = true, ParameterSetName = "AnyButtons")]
+        [Parameter(Mandatory = false, ParameterSetName = "AnyButtons")]
         public string ButtonTwoLabel { get; set; } = null;
 
-        [Parameter(Mandatory = false, ValueFromPipeline = true, ValueFromPipelineByPropertyName = true, ParameterSetName = "AnyButtons")]
+        [Parameter(Mandatory = false, ParameterSetName = "AnyButtons")]
         public string ButtonThreeLabel { get; set; } = null;
-
 
         [Parameter(Mandatory = false, ParameterSetName = "SwitchButtons")]
         [ValidateSet("AbortRetryIgnore","OK", "OKCancel", "RetryCancel", "YesNo", "YesNoCancel")]
@@ -44,29 +43,29 @@ namespace PSmacOS.Cmdlets
 
         protected override void ProcessRecord()
         {
-            if (ParameterSetName == "SwitchButtons") {
-                switch (Buttons) {
-                    case "AbortRetryIngore":
+               if (ParameterSetName == "SwitchButtons") {
+                switch (Buttons.ToLowerInvariant()) {
+                    case "abortretryingore":
                         ButtonOneLabel = "Abort";
                         ButtonTwoLabel = "Retry";
                         ButtonThreeLabel = "Ignore";
                         break;
-                    case "OK":
+                    case "ok":
                         ButtonOneLabel = "OK";
                         break;
-                    case "OKCancel":
+                    case "okcancel":
                         ButtonOneLabel = "OK";
                         ButtonTwoLabel = "Cancel";
                         break;
-                    case "RetryCancel":
+                    case "retrycancel":
                         ButtonOneLabel = "Retry";
                         ButtonTwoLabel = "Cancel";
                         break;
-                    case "YesNo":
+                    case "yesno":
                         ButtonOneLabel = "Yes";
                         ButtonTwoLabel = "No";
                         break;
-                    case "YesNoCancel":
+                    case "yesnocancel":
                         ButtonOneLabel = "Yes";
                         ButtonTwoLabel = "No";
                         ButtonThreeLabel = "Cancel";
