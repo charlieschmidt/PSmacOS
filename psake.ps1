@@ -32,7 +32,7 @@ Task Init {
     "`n"
 }
 
-Task Clean {
+Task Clean -PreCondition { Test-Path $ENV:BHBuildOutput } {
     push-location $ENV:BHBuildOutput
         remove-item * -recurse -force
     Pop-Location
