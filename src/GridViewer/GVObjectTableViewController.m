@@ -36,6 +36,10 @@
 // the objects from the pipeline
 @property (strong) IBOutlet NSArrayController *objects;
 
+@property (strong) NSString *totalCountStringValue;
+@property (strong) NSString *selectedCountStringValue;
+@property (strong) NSString *filteredCountStringValue;
+
 @property (weak) IBOutlet NSSearchFieldCell *searchField;
 @property (weak) IBOutlet NSTableView *tableView;
 
@@ -105,6 +109,8 @@
         [self.objects setFilterPredicate:nil];
         [self.tableView reloadData];
     }
+    
+    [self updateInfoLabels];
     //NSLog(@"in control text was changed");
 }
 
@@ -121,12 +127,13 @@
     [self.view.window close];
 }
 
-unsigned int const TRY_TO_READ = 1024;
+unsigned int const TRY_TO_READ = 1024*10;
 uint8_t _buffer[TRY_TO_READ];
 
 - (void)readDataFromStream:(NSStream *)theStream {
     NSInteger length = [(NSInputStream *)theStream read:_buffer maxLength:TRY_TO_READ];
     if (length) {
+        //NSLog(@"read %ld\n",(long)length);
         if (self.stringBuffer) {
             // Some data left from the last time this method was called so
             // append the new data.
@@ -165,6 +172,8 @@ uint8_t _buffer[TRY_TO_READ];
 - (void)stream:(NSStream *)stream handleEvent:(NSStreamEvent)streamEvent {
     if (streamEvent & NSStreamEventHasBytesAvailable) {
         [self readDataFromStream:stream];
+        
+        //NSLog(@"stdinStream had bytes available %@",[dateFormatter stringFromDate:[NSDate date]]);
     }
     
     if (streamEvent & NSStreamEventErrorOccurred) {
@@ -180,6 +189,9 @@ uint8_t _buffer[TRY_TO_READ];
             [self processLine:self.stringBuffer];
             self.stringBuffer = nil;
         }
+        
+        
+        //NSLog(@"stdinStream finished %@",[dateFormatter stringFromDate:[NSDate date]]);
     }
 }
 
@@ -188,7 +200,7 @@ uint8_t _buffer[TRY_TO_READ];
     
     // store the key -> class
     keyClasses = [[NSMutableDictionary alloc] init];
-
+    
     // read from stdin in the 'background'
     NSStream *stdinStream = [[NSInputStream alloc] initWithFileAtPath:@"/dev/stdin"];
     [stdinStream setDelegate:self];
@@ -203,7 +215,6 @@ uint8_t _buffer[TRY_TO_READ];
 }
 
 unsigned int linesRead = 0;
-
 // process an object from the pipeline
 - (void)processLine:(NSString*)json {
     if (json != nil && [json isEqualToString:@""] == false) {
@@ -264,7 +275,23 @@ unsigned int linesRead = 0;
         
         // add the object (with lowercase keys) to the controller
         [self.objects addObject:objectWithKeys];
+        self.totalCountStringValue = [NSString stringWithFormat:@"%ld",[self.objects.arrangedObjects count]];
+        
+        [self updateInfoLabels];
     }
+}
+
+
+
+- (void)updateInfoLabels {
+    self.selectedCountStringValue = [NSString stringWithFormat:@"%ld",[self.tableView selectedRowIndexes].count];
+    
+    self.filteredCountStringValue = [NSString stringWithFormat:@"%ld",[self.objects.arrangedObjects count]];
+}
+
+- (void)tableViewSelectionDidChange:(NSNotification *)notification
+{
+    [self updateInfoLabels];
 }
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView {

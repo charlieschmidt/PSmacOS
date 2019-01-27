@@ -16,6 +16,18 @@ int main(int argc, const char * argv[]) {
     
     [NSApplication sharedApplication];
     [NSApp setDelegate:del];
+    /*
+    NSFileHandle *input = [NSFileHandle fileHandleWithStandardInput];
+    NSData *inputData = [NSData dataWithData:[input availableData]];
+    NSString *inputString = [[NSString alloc]
+                             initWithData:inputData encoding:NSUTF8StringEncoding];
     
+    NSArray *lines = [inputString componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"\r\n"]];
+    
+    for (NSString *line in lines) {
+        NSLog(@"got line: '%@'",line);
+    }
+    */
+    NSLog(@"and still starting app");
     return NSApplicationMain(argc, argv);
 }
