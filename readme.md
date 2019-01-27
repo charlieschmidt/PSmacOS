@@ -17,7 +17,7 @@ PowerShell module containing convience or platform-specific cmdlets for macOS.
 
 * `Show-MessageBox` - show a message/alert box
 
-* `Out-GridView` - show a searchable table of objects from the pipelin
+* `Out-GridView` - show a searchable table of objects from the pipeline
     
 ## Planned/Future
 
