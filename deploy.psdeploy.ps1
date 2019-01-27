@@ -5,7 +5,7 @@ if(
     ($env:BHCommitMessage -match '!deploy' -or $env:BHCommitMessage -match '!release')
 )
 {
-    push-location Output
+    push-location BuildOutput
     Deploy Module {
         By PSGalleryModule {
             FromSource "$($ENV:BHBuildOutput)/$($ENV:BHProjectName)"
