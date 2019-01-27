@@ -20,9 +20,9 @@
     NSWindow *mainWindow = [NSApplication sharedApplication].mainWindow;
     
     NSArray *args = [[NSProcessInfo processInfo] arguments];
-    NSLog(@"args: %@",args);
-    NSLog(@"arg count: %lu",(unsigned long)args.count);
-    NSLog(@"arg: '%@'",[args objectAtIndex:1]);
+    //NSLog(@"args: %@",args);
+    //NSLog(@"arg count: %lu",(unsigned long)args.count);
+    //NSLog(@"arg: '%@'",[args objectAtIndex:1]);
     
     if (args.count == 2) {
         [mainWindow setTitle:[args objectAtIndex:1]];

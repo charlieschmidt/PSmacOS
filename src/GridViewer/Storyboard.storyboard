@@ -710,9 +710,6 @@
                                     <font key="font" metaFont="system"/>
                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                    <connections>
-                                        <action selector="searchFieldChanged:" target="POU-KC-hyu" id="VCe-bn-nS9"/>
-                                    </connections>
                                 </searchFieldCell>
                                 <connections>
                                     <outlet property="delegate" destination="POU-KC-hyu" id="0C1-bC-eEB"/>

@@ -39,7 +39,6 @@
 @property (weak) IBOutlet NSSearchFieldCell *searchField;
 @property (weak) IBOutlet NSTableView *tableView;
 
-- (IBAction)searchFieldChanged:(id)sender;
 - (IBAction)closeButtonClicked:(id)sender;
 - (IBAction)okButtonClicked:(id)sender;
 
@@ -64,18 +63,22 @@
 @synthesize keyClasses;
 
 - (void)controlTextDidChange:(NSNotification *)obj {
-    NSLog(@"in control text did change");
+    //NSLog(@"in control text did change");
     // the search field has changed
     if (self.keyClasses.allKeys && [self.keyClasses.allKeys count] > 0 && [self.searchField.stringValue isEqualToString:@""] == false) {
         // it has text
+        
+        //NSLog(@"looking for %@",self.searchField.stringValue);
         
         // build a predicate of () or () or () where each element is a comparison one of the object's properties
         NSMutableArray *subPredicates = [NSMutableArray array];
         
         for (NSString *key in self.keyClasses.allKeys) {
             // foreach key, add a () clause
-            NSPredicate *subPredicate;
+            NSPredicate *subPredicate = nil;
+            //NSLog(@"key = %@",key);
             Class klass = [keyClasses objectForKey:key];
+            //NSLog(@"value = %@",klass);
             
             if ([klass isSubclassOfClass:[NSString class]]) {
                 // if it's a string, normal comparison
@@ -83,9 +86,13 @@
             } else if ([klass isSubclassOfClass:[NSNumber class]]) {
                 // if it's a number, check if null and then compare to stringvalue
                 subPredicate = [NSPredicate predicateWithFormat:@"(%K != nil AND %K.stringValue CONTAINS[cd] %@)", key, key, self.searchField.stringValue];
+            } else {
+                //NSLog(@"No predicate is appropriate");
             }
             
-            [subPredicates addObject:subPredicate];
+            if (subPredicate != nil) {
+                [subPredicates addObject:subPredicate];
+            }
         }
         
         // create master predicate of all subpredicates OR'd together
@@ -98,13 +105,9 @@
         [self.objects setFilterPredicate:nil];
         [self.tableView reloadData];
     }
-    NSLog(@"in control text was changed");
+    //NSLog(@"in control text was changed");
 }
 
-
-- (IBAction)searchFieldChanged:(id)sender {
-   
-}
 
 - (IBAction)closeButtonClicked:(id)sender {
     [self.view.window close];
@@ -296,7 +299,7 @@ unsigned int linesRead = 0;
             newValue =  numberStr;
         } else {
             // ?
-            newValue =  @"NULLLLLL";
+            newValue =  @"";
         }
     }
     NSTableCellView *cellView = [tableView makeViewWithIdentifier:@"DefaultCellView" owner:self];
