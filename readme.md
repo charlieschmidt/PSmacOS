@@ -31,4 +31,4 @@ Look in the [docs](docs/) folder.
 
     ![Out-GridView screenshot](/Resources/Screenshot-Out-GridView.png)
 
-* [Invoke-Applescript](docs/Invoke-AppleSCript.md) - invoke AppleScript
+* [Invoke-AppleScript](docs/Invoke-AppleScript.md) - invoke AppleScript
