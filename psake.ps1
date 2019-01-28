@@ -151,10 +151,12 @@ Task Test -Depends Build {
     "`n"
 }
 
-Task BumpVersion -Depends {
+Task BumpVersion {
     $lines
     
     Update-Metadata -Path $env:BHPSModuleManifest  
+    
+    "`n"
 }
 
 Task Deploy -Depends Test,BuildDocs {
