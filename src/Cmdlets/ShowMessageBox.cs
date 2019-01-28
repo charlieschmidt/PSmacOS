@@ -29,7 +29,7 @@ namespace PSmacOS.Cmdlets
 
 
         [Parameter(Mandatory = false, ParameterSetName = "AnyButtons")]
-        public string ButtonOneLabel { get; set; } = "OK33234";
+        public string ButtonOneLabel { get; set; } = "Ok";
 
         [Parameter(Mandatory = false, ParameterSetName = "AnyButtons")]
         public string ButtonTwoLabel { get; set; } = null;
@@ -45,7 +45,7 @@ namespace PSmacOS.Cmdlets
         {
                if (ParameterSetName == "SwitchButtons") {
                 switch (Buttons.ToLowerInvariant()) {
-                    case "abortretryingore":
+                    case "abortretryignore":
                         ButtonOneLabel = "Abort";
                         ButtonTwoLabel = "Retry";
                         ButtonThreeLabel = "Ignore";
