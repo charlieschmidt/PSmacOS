@@ -27,7 +27,7 @@ int main(int argc, const char * argv[]) {
     for (NSString *line in lines) {
         NSLog(@"got line: '%@'",line);
     }
-    */
     NSLog(@"and still starting app");
+    */
     return NSApplicationMain(argc, argv);
 }
