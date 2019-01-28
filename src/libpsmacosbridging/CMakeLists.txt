@@ -20,7 +20,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -pedantic -g")
 
 #set_source_files_properties(*.m PROPERTIES COMPILE_FLAGS "-x objective-c")
 
-set(LIBPSMACOSBRIDGING_PRIVATE_LIBS ${LIBPSMACOSBRIDGING_PRIVATE_LIBS} "-framework Cocoa")
+set(LIBPSMACOSBRIDGING_PRIVATE_LIBS ${LIBPSMACOSBRIDGING_PRIVATE_LIBS} "-framework Cocoa,CoreServices")
 
 # Source files
 set(OBJC_HEADERS
@@ -31,6 +31,7 @@ set(OBJC_SOURCE
     bridge_memory.m
     bridge_messagebox.m
     bridge_pasteboard.m
+    bridge_applescript.m
 )
 
 # Set the output folders

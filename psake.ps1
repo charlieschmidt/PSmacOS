@@ -54,9 +54,11 @@ Task Clean -PreCondition { Test-Path $ENV:BHBuildOutput } {
     pop-location
 }
 
-Task CompileObjC {
+Task CompileObjC -Depends CompileGridViewer,CompileBridgingLibrary
+
+Task CompileGridViewer {
     $lines
-    'Compiling Objective-C bridging code'
+    'Compiling GridViewer app'
     push-location -Path "$ProjectRoot/src/GridViewer"
         if ($env:BHBuildSystem -eq 'Travis CI') {
             $configuration = "Release"
@@ -71,7 +73,12 @@ Task CompileObjC {
         }
         Copy-Item -Path "./Build/$Configuration/GridViewer.app" -Destination $ENV:BHBuildOutput\PSmacOS\bin -Recurse -Force
     pop-location
+    "`n"
+}
 
+Task CompileBridgingLibrary {
+    $lines
+    'Compiling Objective-C bridging code'
     push-location -Path "$ProjectRoot/src/libpsmacosbridging"
         new-item -name "build" -ItemType "Directory" -Force -ErrorAction SilentlyContinue | Out-Null
         push-location build
@@ -90,7 +97,6 @@ Task CompileObjC {
             copy-item "./lib/*.dylib" $ENV:BHBuildOutput\PSmacOS\bin -Recurse -Force
         pop-location
     pop-location
-    
     "`n"
 }
 

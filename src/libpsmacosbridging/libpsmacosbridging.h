@@ -16,6 +16,9 @@ unsigned long showMessageBox(double timeoutSeconds, unsigned long type, const ch
 // bridge_memory.m
 void freeString(char *string);
 
+// bridge_applescript.mh
+bool executeAppleScript(const char *appleScript, const char *functionName, char **arguments, int argumentCount);
+
 #ifdef __cplusplus
 }
 #endif

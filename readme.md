@@ -30,9 +30,5 @@ Look in the [docs](docs/) folder.
 * [Out-GridView](docs/Out-GridView.md) - show a searchable table of objects from the pipeline
 
     ![Out-GridView screenshot](/Resources/Screenshot-Out-GridView.png)
-    
-## Planned/Future
 
-* `Start-Process` or equivalent that knows about macOS app bundles [like the `open` command but powershelly]
-
-* `Invoke-AppleScript` - why not?
+* [Invoke-Applescript](docs/Invoke-AppleSCript.md) - invoke AppleScript

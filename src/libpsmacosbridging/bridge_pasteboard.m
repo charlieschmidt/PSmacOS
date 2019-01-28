@@ -43,7 +43,7 @@ bool setClipboard(const char *valueString)
 
     // convert char* to utf'd nsstring
     NSString *valueNSString;
-    valueNSString = [[NSString alloc] initWithBytes:valueString length:strlen(valueString) encoding:NSUTF8StringEncoding];
+    valueNSString = [[NSString alloc] initWithCString:valueString encoding:NSUTF8StringEncoding];
 
     // prepare clipboard for change
     [pb declareTypes:[NSArray arrayWithObjects:NSPasteboardTypeString,nil] owner:nil];

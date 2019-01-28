@@ -7,7 +7,7 @@ namespace PSmacOS
 {
     public static class MarshalExtensions
     {
-        public static IntPtr NativeUtf8FromString(string managedString)
+        public static IntPtr NativeString(string managedString)
         {
             if (managedString != null)
             {
@@ -21,8 +21,38 @@ namespace PSmacOS
                 return IntPtr.Zero;
             }
         }
+        
+        public static void FreeNativeString(IntPtr nativeString) {
+            Marshal.FreeHGlobal(nativeString);
+        }
 
-        public static string StringFromNativeUtf8(IntPtr nativeUtf8)
+        public static IntPtr[] NativeArray(string[] managedArray)
+        {
+            if (managedArray != null && managedArray.Length != 0)
+            {
+                IntPtr[] nativeArray = new IntPtr[managedArray.Length];
+                for (int i = 0; i < managedArray.Length; i++)
+                {
+                    string managedString = managedArray[i];
+                    IntPtr nativeString = NativeString(managedString);
+                    nativeArray[i] = nativeString;
+                }
+                return nativeArray;
+            }
+            else
+            {
+                return new IntPtr[0];
+            }
+        }
+
+        public static void FreeNativeArray(IntPtr[] nativeArray)
+        {
+            foreach (IntPtr s in nativeArray) {
+                FreeNativeString(s);
+            }
+        }
+
+        public static string ManagedString(IntPtr nativeUtf8)
         {
             if (nativeUtf8 != IntPtr.Zero)
             {

@@ -28,13 +28,19 @@ namespace PSmacOS.NativeBridge
 
         public static ulong Show(double timeoutSeconds, MessageBox.Type type, string title, string message, string buttonOneLabel, string buttonTwoLabel, string buttonThreeLabel)
         {
-            var titleManagedString = MarshalExtensions.NativeUtf8FromString(title);
-            var messageManagedString = MarshalExtensions.NativeUtf8FromString(message);
-            var buttonOneLabelManagedString = MarshalExtensions.NativeUtf8FromString(buttonOneLabel);
-            var buttonTwoLabelManagedString = MarshalExtensions.NativeUtf8FromString(buttonTwoLabel);
-            var buttonThreeLabelManagedString = MarshalExtensions.NativeUtf8FromString(buttonThreeLabel);
+            var titleNativeString = MarshalExtensions.NativeString(title);
+            var messageNativeString = MarshalExtensions.NativeString(message);
+            var buttonOneLabelNativeString = MarshalExtensions.NativeString(buttonOneLabel);
+            var buttonTwoLabelNativeString = MarshalExtensions.NativeString(buttonTwoLabel);
+            var buttonThreeLabelNativeString = MarshalExtensions.NativeString(buttonThreeLabel);
 
-            ulong response = showMessageBox(timeoutSeconds, Convert.ToUInt64(type), titleManagedString, messageManagedString, buttonOneLabelManagedString, buttonTwoLabelManagedString, buttonThreeLabelManagedString);
+            ulong response = showMessageBox(timeoutSeconds, Convert.ToUInt64(type), titleNativeString, messageNativeString, buttonOneLabelNativeString, buttonTwoLabelNativeString, buttonThreeLabelNativeString);
+
+            MarshalExtensions.FreeNativeString(titleNativeString);
+            MarshalExtensions.FreeNativeString(messageNativeString);
+            MarshalExtensions.FreeNativeString(buttonOneLabelNativeString);
+            MarshalExtensions.FreeNativeString(buttonTwoLabelNativeString);
+            MarshalExtensions.FreeNativeString(buttonThreeLabelNativeString);
 
             return response;
         }

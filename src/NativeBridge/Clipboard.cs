@@ -17,23 +17,24 @@ namespace PSmacOS.NativeBridge
         internal extern static IntPtr getClipboard();
 
         [DllImport("./libpsmacosbridging")]
-        internal extern static bool setClipboard(IntPtr clipboardManagedString);
+        internal extern static bool setClipboard(IntPtr clipboardNativeString);
 
         [DllImport("./libpsmacosbridging")]
-        internal extern static void freeString(IntPtr managedString);
+        internal extern static void freeString(IntPtr nativeString);
 
         public static string Get()
         {
-            IntPtr clipboardManagedString = getClipboard();
-            var clipboardString = MarshalExtensions.StringFromNativeUtf8(clipboardManagedString);
-            freeString(clipboardManagedString);
+            IntPtr clipboardNativeString = getClipboard();
+            var clipboardString = MarshalExtensions.ManagedString(clipboardNativeString);
+            freeString(clipboardNativeString);
             return clipboardString;
         }
 
         public static bool Set(string value)
         {
-            var clipboardManagedString = MarshalExtensions.NativeUtf8FromString(value);
-            var ret = setClipboard(clipboardManagedString);
+            var clipboardNativeString = MarshalExtensions.NativeString(value);
+            var ret = setClipboard(clipboardNativeString);
+            MarshalExtensions.FreeNativeString(clipboardNativeString);
             return ret;
         }
     }
