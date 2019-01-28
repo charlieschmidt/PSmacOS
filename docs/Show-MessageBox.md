@@ -31,7 +31,7 @@ Show a native message/alert box for the user to respond to
 
 ### Example 1
 ```powershell
-PS C:\> Show-MessageBox -Title "Title" -Message "This is the message text.  It is important." -Buttons "OK"
+PS C:\> Show-MessageBox -Title "Title" -Message "This is the message text.  It is important."
 ```
 
 Shows a message box with 1 button, on the right side, with text of `Ok`
@@ -162,6 +162,11 @@ Accept wildcard characters: False
 ### -Type
 Type for the message box window.  This will change the icon used in the alert.
 
+* Plain - default macOS application icon (paper with A from ruler/paintbrush)
+* Caution - yellow triangle
+* Stop - red stop sign
+* Note - speech bubble with exclaimation mark
+
 ```yaml
 Type: Type
 Parameter Sets: (All)
@@ -170,7 +175,7 @@ Accepted values: Stop, Note, Caution, Plain
 
 Required: False
 Position: Named
-Default value: None
+Default value: Plain
 Accept pipeline input: True (ByPropertyName, ByValue)
 Accept wildcard characters: False
 ```
