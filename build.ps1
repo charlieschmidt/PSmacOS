@@ -56,9 +56,9 @@ if ($Fast.IsPresent -eq $false) {
 # Grab nuget bits, install modules, set build variables, start build.
     Get-PackageProvider -Name NuGet -ForceBootstrap | Out-Null
 
-    Resolve-Module Psake, PSDeploy, Pester, BuildHelpers
+    Resolve-Module Psake, PSDeploy, platyPS, Pester, BuildHelpers
 } else {
-    Import-Module Psake, PSDeploy, Pester, BuildHelpers
+    Import-Module Psake, PSDeploy, platyPS, Pester, BuildHelpers
 }
 
 Set-BuildEnvironment -Force

@@ -21,7 +21,7 @@ Properties {
 }
 
 
-Task Default -Depends Init,Clean,Build,Test,Deploy
+Task Default -Depends Init,Clean,Build,BuildDocs,Test,Deploy
 
 
 Task Init {
@@ -114,6 +114,13 @@ Task Build -Depends CompileCSharp {
     "`n"
 }
 
+Task BuildDocs -Depends Build {
+    $lines
+    'Building documentation'
+    New-ExternalHelp ".\docs" -OutputPath "$($ENV:BHBuildOutput)\PSmacOS\en-US" -Force
+    "`n"
+}
+
 Task Test -Depends Build {
     $lines
     if ($env:BHBuildSystem -eq 'Travis CI' -or $env:BHBranchName -eq "master") {
@@ -150,7 +157,7 @@ Task BumpVersion -Depends {
     Update-Metadata -Path $env:BHPSModuleManifest  
 }
 
-Task Deploy -Depends Test {
+Task Deploy -Depends Test,BuildDocs {
     $lines
 
     $Params = @{
