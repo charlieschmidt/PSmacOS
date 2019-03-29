@@ -1,3 +1,4 @@
+$script:kind = 'PSMacOSSecret'
 Function Set-Secret
 {
     param(
@@ -16,7 +17,7 @@ Function Set-Secret
 
     if($IsMacOS)
     {
-        security add-generic-password -a $Account -w $Secret -s $Service
+        security add-generic-password -a $Account -w $Secret -s $Service -D $script:kind
     }
     else {
         throw "OS not supported"
@@ -35,7 +36,7 @@ function Get-Secret
         $Service
     )
 
-    return (security find-generic-password -a $Account -s $Service -w)
+    return (security find-generic-password -D $script:kind -a $Account -s $Service -w)
 }
 
 Export-ModuleMember -Function @(
